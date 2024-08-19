@@ -1,0 +1,11 @@
+{
+  "workbench.localHistory.enabled": true,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": false,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.acceptSuggestionOnEnter": "off"
+}
