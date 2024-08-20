@@ -15,15 +15,15 @@ NO_COLOR   = \033[m
 
 # DELETE ALL DOCKETEER RELATED - Images, Volumes, Containers (should be removed from 'make browser-down')
 # Start Sever WITHOUT CACHE!
-browser-new:
-	docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-browser.yaml up --build -d
+morpheus-new:
+	docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-morpheus.yaml up --build -d
 
 # RECOMMENDED
-browser-dev:
-	docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-browser.yaml up -d
+morpheus-dev:
+	docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-morpheus.yaml up -d
 
-browser-down:
-	docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-browser.yaml down -v
+morpheus-down:
+	docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-morpheus.yaml down -v
 
 build-dev:
 	docker build -t ${DEV_NAME} -f ${DOCKERFILEDIRECTORY}/dockerfile.dev .
