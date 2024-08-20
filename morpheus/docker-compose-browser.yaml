@@ -15,8 +15,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - morpheus-prometheus-files:/prometheus
       - morpheus-grafana-files:/grafana
-    ports:
-      - 3001:3001
+    # ports:
+    #   - 3001:3001
 
   cadvisor:
     # Must use cadvisor v0.47.1 instead of latest, latest does not work for macOS
