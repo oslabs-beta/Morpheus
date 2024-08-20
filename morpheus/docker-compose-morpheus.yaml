@@ -12,7 +12,7 @@ services:
       - STATUS=development
     volumes:
       # Opens the docker sock and creates named volumes for persistent data that can be shared between containers
-      - /var/run/docker.sock:/var/run/docker.sock
+      # - /var/run/docker.sock:/var/run/docker.sock
       - morpheus-prometheus-files:/prometheus
       - morpheus-grafana-files:/grafana
     # ports:
@@ -26,7 +26,7 @@ services:
     expose:
       - 8080
     ports:
-      - 49158:8080
+      - 50000:8080
     volumes:
       # Applies the bind mounts in ro (read only) and rw (read write) to be able to scrape containers
       - /:/rootfs:ro
@@ -43,7 +43,7 @@ services:
     expose:
       - 9100
     ports:
-      - 49157:9100
+      - 50001:9100
     volumes:
       #system info for linux machines
       - /proc:/host/proc:ro
@@ -69,7 +69,7 @@ services:
     expose:
       - 9090
     ports:
-      - 49156:9090
+      - 50002:9090
     volumes:
       - morpheus-prometheus-files:/etc/prometheus
       - morpheus-prometheus-data:/prometheus
@@ -90,7 +90,7 @@ services:
     expose:
       - 3000
     ports:
-      - 49155:3000
+      - 50003:3000
     volumes:
       - morpheus-grafana-files:/etc/grafana
     environment:
