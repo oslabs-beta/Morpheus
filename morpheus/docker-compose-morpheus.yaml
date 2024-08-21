@@ -28,14 +28,16 @@ services:
     ports:
       - 50000:8080
     volumes:
-      # Applies the bind mounts in ro (read only) and rw (read write) to be able to scrape containers
-      - /:/rootfs:ro
-      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - /etc/machine-id:/etc/machine-id:ro
+      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
+      - /:/rootfs:ro
+      - /dev/disk/:/dev/disk:ro
     privileged: true
+    restart: unless-stopped
     devices:
       - /dev/kmsg
 
@@ -55,8 +57,6 @@ services:
       - /sys:/host/sys:ro
       #root
       - /:/rootfs:ro
-    # Set up the node-exporter to scrape resource metrics
-    # Dockerfile handles this if you're using the uploaded images
     command:
       - --path.procfs=/host/proc
       - --path.rootfs=/rootfs
