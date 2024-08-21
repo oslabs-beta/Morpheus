@@ -25,6 +25,12 @@ morpheus-dev:
 morpheus-down:
 	docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-morpheus.yaml down -v
 
+morpheus-wsl-dev:
+	sudo docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-morpheus-wsl.yaml up -d
+
+morpheus-wsl-down:
+	sudo docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-morpheus-wsl.yaml down -v
+
 build-dev:
 	docker build -t ${DEV_NAME} -f ${DOCKERFILEDIRECTORY}/dockerfile.dev .
 
