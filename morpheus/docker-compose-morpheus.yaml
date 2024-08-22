@@ -4,6 +4,7 @@ services:
   # The UI/Backend
   morpheus:
     build:
+      no_cache: true
       context: ..
       dockerfile: morpheus/dockerfile.dev
     container_name: morpheus
