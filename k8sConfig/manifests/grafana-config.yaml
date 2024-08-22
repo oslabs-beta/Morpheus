@@ -12,4 +12,18 @@ stringData:
   grafana.ini: |
     [date_formats]
     default_timezone = UTC
+    [server]
+    allow_embedding = true
+    enable_gzip = true
+    [security]
+    allow_embedding = true
+    [plugins]
+    plugins = boomtheme-panel
+    enable_alpha = true
+    [auth.anonymous]
+    enabled = true
+    org_name = Main Org.
+    org_role = Viewer
+    [log]
+    level = error
 type: Opaque
