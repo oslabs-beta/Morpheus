@@ -46,7 +46,7 @@ export default function BedrockTest() {
           return response.json();
         } catch (error) {
           console.error(`Error fetching data for query ${query}:`, error);
-          return null; // or some error placeholder
+          return null;
         }
       })
     );

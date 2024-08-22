@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import {
   BedrockRuntimeClient,
   InvokeModelCommand,
+  ResourceNotFoundException,
 } from '@aws-sdk/client-bedrock-runtime';
 import { RateLimiter } from 'limiter';
 
@@ -14,7 +15,7 @@ const allowedModels = [
 
 // Default prompt to use if none is provided
 const defaultPrompt =
-  "Enter your query here. For example: 'Analyze the performance metrics of my Docker containers and provide optimization suggestions.'";
+  'Analyze the performance metrics of my Docker containers and provide optimization suggestions.';
 
 // Create a rate limiter: 2 requests per second
 const limiter = new RateLimiter({ tokensPerInterval: 2, interval: 'second' });
@@ -37,6 +38,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid model' }, { status: 400 });
     }
 
+    console.log('Requested model:', model); // Log the requested model
+
     // Initialize the Bedrock client with AWS credentials
     const client = new BedrockRuntimeClient({
       region: process.env.AWS_REGION,
@@ -52,7 +55,7 @@ export async function POST(request: Request) {
       contentType: 'application/json',
       accept: 'application/json',
       body: JSON.stringify({
-        prompt: `${prompt}\n\nPlease provide a detailed analysis and specific recommendations.`,
+        prompt: `Human: ${prompt}\n\nPlease provide a detailed analysis and specific recommendations.`,
         max_tokens_to_sample: 1000,
       }),
     });
@@ -75,16 +78,13 @@ export async function POST(request: Request) {
     // Return the model's completion as the API response
     return NextResponse.json({ result: result.completion });
   } catch (error) {
-    // Log any errors that occur during the process
     console.error('Error invoking Bedrock model:', error);
 
-    // Return a more specific error message to the client
+    // Generic error message for all types of errors
     return NextResponse.json(
       {
         error:
-          error instanceof Error
-            ? error.message
-            : 'An unexpected error occurred during analysis',
+          'An error occurred while processing your request. Please try again later.',
       },
       { status: 500 }
     );

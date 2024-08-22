@@ -1,5 +1,6 @@
 .history
 .DS_Store
+.env.local
 
 # Logs
 logs

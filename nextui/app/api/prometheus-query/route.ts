@@ -24,6 +24,7 @@ export async function GET(request: Request) {
 
   try {
     // Construct the Prometheus API URL with the provided query
+    //base URL for prom server, endpoint on prom server for querying data w/ API verison 1, encodes query parameter in url format
     const prometheusUrl = `${PROMETHEUS_URL}/api/v1/query?query=${encodeURIComponent(
       query
     )}`;
