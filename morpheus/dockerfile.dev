@@ -6,4 +6,4 @@ COPY imageConfigs/prometheus prometheus
 COPY imageConfigs/grafana grafana
 
 # Starts the application
-# CMD ["tail", "-f", "/dev/null"]
+CMD ["tail", "-f", "/dev/null"]

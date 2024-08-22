@@ -1,6 +1,6 @@
 # Make sure to update versions to whatever the latest is
 
-EXTENSION_IMAGE?=docketeerxiv/morpheus
+IMAGE?=osp/morpheus
 
 # ONLY CHANGE THIS VERSION TO YOUR GROUP
 VERSION?=1.0.0
@@ -13,44 +13,41 @@ VITE_DEV_PORT=4000
 INFO_COLOR = \033[0;36m
 NO_COLOR   = \033[m
 
-# DELETE ALL DOCKETEER RELATED - Images, Volumes, Containers (should be removed from 'make browser-down')
-# Start Sever WITHOUT CACHE!
 morpheus-new:
 	docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-morpheus.yaml up --build -d
 
-# RECOMMENDED
 morpheus-dev:
 	docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-morpheus.yaml up -d
 
 morpheus-down:
 	docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-morpheus.yaml down -v
 
-morpheus-wsl-dev:
-	sudo docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-morpheus-wsl.yaml up -d
-
-morpheus-wsl-down:
-	sudo docker compose -f ${DOCKERFILEDIRECTORY}/docker-compose-morpheus-wsl.yaml down -v
+morpheus-rm:
+	docker image remove -f morpheus-morpheus
 
 build-dev:
 	docker build -t ${DEV_NAME} -f ${DOCKERFILEDIRECTORY}/dockerfile.dev .
 
-# NOTE: This will delete EVERYTHING not just Docketeer related files!
+# NOTE: This will delete EVERYTHING
 pruneAll: 
 	docker system prune --all --force --volumes
 	
-img_prune:
+image_prune:
 	docker image prune -af
 
-clr_cache:
-	docker buildx prune -f 
+volume_prune:
+	docker volume prune -af
 
-build-prod: ## Build service image to be deployed
-	docker build --tag=$(EXTENSION_IMAGE):$(VERSION) -f ${DOCKERFILEDIRECTORY}/dockerfile.prod .
+build_prune:
+	docker buildx prune -af 
+
+build-prod:
+	docker build --tag=$(IMAGE):$(VERSION) -f ${DOCKERFILEDIRECTORY}/dockerfile.prod .
 
 prepare-buildx: ## Create buildx builder for multi-arch build, if not exists
 	docker buildx inspect $(BUILDER) || docker buildx create --name=$(BUILDER) --driver=docker-container --driver-opt=network=host
 
-help: ## Show this help
+help:
 	@echo Please specify a build target. The choices are:
 	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "$(INFO_COLOR)%-30s$(NO_COLOR) %s\n", $$1, $$2}'
 
