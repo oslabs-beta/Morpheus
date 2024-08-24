@@ -54,8 +54,7 @@ export async function POST(request: Request) {
 
     // Send the enhanced prompt to OpenAI for analysis
     const completion = await openai.chat.completions.create({
-      // model: 'gpt-4-0125-preview',
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4-0125-preview',
       messages: [{ role: 'user', content: enhancedPrompt }],
     });
 
