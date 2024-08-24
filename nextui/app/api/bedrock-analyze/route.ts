@@ -15,7 +15,7 @@ const allowedModels = [
 
 // Default prompt to use if none is provided
 const defaultPrompt =
-  'Analyze the performance metrics of my Docker containers and provide optimization suggestions.';
+  'Analyze the performance metrics of my Docker containers and provide optimization suggestions. Limit your response to 300 tokens.';
 
 // Create a rate limiter: 2 requests per second
 const limiter = new RateLimiter({ tokensPerInterval: 2, interval: 'second' });
