@@ -10,10 +10,11 @@
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.635.0",
-    "@emotion/react": "^11.13.0",
+    "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
+    "gpt3-tokenizer": "^1.1.5",
     "limiter": "^2.1.0",
     "next": "14.2.5",
     "react": "^18",

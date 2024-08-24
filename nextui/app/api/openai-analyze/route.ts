@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     }
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
     });
 
@@ -40,7 +40,16 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error invoking OpenAI model:', error);
 
-    // Generic error message for all types of errors
+    if (error instanceof OpenAI.APIError) {
+      if (error.status === 429) {
+        return NextResponse.json(
+          { error: 'API rate limit exceeded. Please try again later.' },
+          { status: 429 }
+        );
+      }
+    }
+
+    // Generic error message for all other types of errors
     return NextResponse.json(
       {
         error:
