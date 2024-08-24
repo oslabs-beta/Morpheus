@@ -19,7 +19,9 @@ import Link from 'next/link';
 const pages = [
   { name: 'Dashboard', path: '/dashboard' },
   { name: 'Settings', path: '/dashboard/settings' },
-  { name: 'Data', path: '/dashboard/data' }
+  { name: 'Data', path: '/dashboard/data' },
+  { name: 'System Data', path: '/systemData' },
+  {name: "Kubernetes", path: '/kubernetes'}
 ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 

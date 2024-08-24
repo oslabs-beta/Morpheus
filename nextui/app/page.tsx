@@ -20,10 +20,17 @@ export default function Home() {
               <Paper className={scss.dataCard}>grid2</Paper>
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <Paper className={scss.dataCard}>grid3</Paper>
+                            <Link href="/systemData">
+                <Paper className={scss.dataCard}>system Data Metrics </Paper>
+                </Link>
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <Paper className={scss.dataCard}>grid4</Paper>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Link href="/kubernetes">
+                <Paper className={scss.dataCard}>Kubernetes</Paper>
+                </Link>
             </Grid>
           </Grid>
         </main>

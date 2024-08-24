@@ -1,0 +1,67 @@
+.topCardsContainer {
+  margin-top: 10px;
+}
+
+.dataCard {
+  padding: 20px;
+  position: relative;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background-color: white;
+}
+
+.dataCardGrid1, .dataCardGrid2, .thirdGridItems {
+  padding: 0;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background-color: white;
+  overflow: hidden; //fixes the curved edges overflowing = dont remove, breaks the dark background charts only
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+// cannot fix spacing between grid2 and grid1 the 10 pixel gap is going to stay i guess 
+.dataCardGrid1 iframe,
+.dataCardGrid2 iframe,
+.thirdGridItems iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+.dataCardGrid1 {
+  height: 120%;
+}
+
+.dataCardGrid2 {
+  height: 100%;
+}
+
+.thirdGridItems {
+  height: 400px;
+}
+
+.cardHeaderCPU,
+.cardHeaderMemory,
+.cardHeaderNetwork {
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 600;
+  padding: 0.75rem;
+  text-align: center;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.cardHeaderCPU {
+  background: linear-gradient(to right, #3b82f6, #4f46e5);
+}
+
+.cardHeaderMemory {
+  background: linear-gradient(to right, #f6803b, #fb7405);
+}
+
+.cardHeaderNetwork {
+  background: linear-gradient(to right, #b723f1, #a905fb);
+}
