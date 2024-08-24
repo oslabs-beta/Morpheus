@@ -41,6 +41,7 @@ export default function BedrockTest() {
             `/api/prometheus-query?query=${encodeURIComponent(query)}`
           );
           if (!response.ok) {
+            console.log(response)
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           return response.json();

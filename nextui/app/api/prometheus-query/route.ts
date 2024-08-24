@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { RateLimiter } from 'limiter';
 
 // Set the Prometheus URL, defaulting to localhost if not provided in environment variables
-const PROMETHEUS_URL = process.env.PROMETHEUS_URL || 'http://localhost:9090';
+const PROMETHEUS_URL = process.env.PROMETHEUS_URL || 'http://localhost:50002';
 
 // Create a rate limiter: 5 requests per second
 const limiter = new RateLimiter({ tokensPerInterval: 5, interval: 'second' });
