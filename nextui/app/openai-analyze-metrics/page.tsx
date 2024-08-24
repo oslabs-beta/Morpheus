@@ -44,7 +44,14 @@ export default function OpenAIAnalyzeMetrics() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1, p: 2 }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        p: 2,
+        // bgcolor: 'gray',
+        // color: 'white',
+      }}
+    >
       <Grid container spacing={2}>
         <Grid item xs={12} md={4}>
           <Typography variant='h4' gutterBottom>
@@ -58,7 +65,7 @@ export default function OpenAIAnalyzeMetrics() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder='Enter your prompt here'
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, bgcolor: 'white' }}
           />
           <Button
             variant='contained'
@@ -77,8 +84,8 @@ export default function OpenAIAnalyzeMetrics() {
         <Grid item xs={12} md={8}>
           {response && (
             <Paper elevation={3} sx={{ p: 2, mt: 2, height: '100%' }}>
-              <Typography variant='h6' gutterBottom>
-                Analysis Result:
+              <Typography variant='h6' gutterBottom fontWeight='bold'>
+                Insights and Recommendations:
               </Typography>
               <Typography
                 variant='body1'

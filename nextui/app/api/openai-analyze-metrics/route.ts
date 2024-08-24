@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       Here's the current metrics data from our system:
       ${JSON.stringify(prometheusData, null, 2)}
       
-      Please analyze these metrics along with the original prompt and provide insights and recommendations. Limit your response to 800 tokens.
+      Please analyze these metrics along with the original prompt and provide insights and recommendations. Limit your response to 500 tokens.
     `;
 
     // Send the enhanced prompt to OpenAI for analysis
