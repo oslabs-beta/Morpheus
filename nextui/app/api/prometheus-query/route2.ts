@@ -29,6 +29,19 @@ export async function GET(request: Request) {
       })
     );
 
+    const fetchPrometheusData = async () => {
+      try {
+        const response = await fetch('/api/prometheus-query');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      } catch (error) {
+        console.error('Error fetching Prometheus data:', error);
+        return null;
+      }
+    };
+
     // Log the results
     console.log('Prometheus data:', JSON.stringify(results, null, 2));
     message += ' Prometheus data fetched successfully.';
