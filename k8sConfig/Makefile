@@ -35,3 +35,11 @@ get-monitoring-pods:
 port-forward-k8s-grafana:
 	kubectl -n monitoring port-forward svc/grafana 45556:3000
 
+kind-delete:
+	kind delete cluster --name k8s-morpheus 
+
+get-pods:
+	kubectl -n monitoring get pods
+
+get-all:
+	kubectl -n monitoring get all
