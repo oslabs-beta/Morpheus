@@ -9,7 +9,7 @@ install-kubectl:
 	brew install kubectl
 
 # Step 3 - Create cluster
-kind-cluster:
+kind-create-cluster:
 	kind create cluster --name k8s-morpheus --image kindest/node:v1.28.13 --config ./kind.yaml
 
 # Step 4 - change control context to k8s-morpheus
@@ -35,7 +35,10 @@ get-monitoring-pods:
 port-forward-k8s-grafana:
 	kubectl -n monitoring port-forward svc/grafana 45556:3000
 
-kind-delete:
+port-forward-k8s-prometheus:
+	kubectl -n monitoring port-forward svc/prometheus-k8s 45558:9090
+
+kind-delete-cluster:
 	kind delete cluster --name k8s-morpheus 
 
 get-pods:
