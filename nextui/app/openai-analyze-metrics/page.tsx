@@ -52,10 +52,16 @@ export default function OpenAIAnalyzeMetrics() {
         // color: 'white',
       }}
     >
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
-          <Typography variant='h4' gutterBottom>
-            OpenAI Metrics Analysis
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={4} lg={4} sx={{ pr: { md: 2 } }}>
+          <Typography
+            variant='h3'
+            fontFamily={'avenir'}
+            // fontWeight={'bold'}
+            gutterBottom
+            sx={{ mt: 5, mb: 5 }}
+          >
+            OpenAI Analysis
           </Typography>
           <TextField
             fullWidth
@@ -65,7 +71,14 @@ export default function OpenAIAnalyzeMetrics() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder='Enter your prompt here'
-            sx={{ mb: 2, bgcolor: 'white' }}
+            sx={{
+              mb: 2,
+              bgcolor: 'white',
+              border: '1px solid rgba(0,0,0,.1)',
+              '& .MuiInputBase-input': {
+                fontSize: '20px',
+              },
+            }}
           />
           <Button
             variant='contained'
@@ -82,22 +95,75 @@ export default function OpenAIAnalyzeMetrics() {
           )}
         </Grid>
         <Grid item xs={12} md={8}>
-          {response && (
-            <Paper elevation={3} sx={{ p: 2, mt: 2, height: '100%' }}>
-              <Typography variant='h6' gutterBottom fontWeight='bold'>
+          <Paper
+            elevation={2} //for shadow effect
+            sx={{
+              p: 2,
+              mt: 2,
+              height: 'calc(100vh - 100px)',
+              display: 'flex',
+              flexDirection: 'column',
+              border: '1px solid rgba(0,0,0,.2)',
+            }}
+          >
+            {response && (
+              <Typography
+                variant='h5'
+                gutterBottom
+                fontWeight='bold'
+                fontFamily={'avenir'}
+                sx={{ mb: 5 }}
+              >
                 Insights and Recommendations:
               </Typography>
+            )}
+            {isLoading ? (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flex: 1,
+                }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : response ? (
               <Typography
                 variant='body1'
                 sx={{
-                  fontFamily: 'Calibri, Arial, sans-serif',
+                  fontFamily: 'avenir',
                   whiteSpace: 'pre-wrap',
+                  fontSize: '22px',
+                  overflowY: 'auto',
+                  flex: 1,
                 }}
               >
                 {response}
               </Typography>
-            </Paper>
-          )}
+            ) : (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flex: 1,
+                }}
+              >
+                <Typography
+                  variant='body1'
+                  sx={{
+                    color: 'text.secondary',
+                    fontStyle: 'italic',
+                    fontFamily: 'avenir',
+                    fontSize: '20px',
+                  }}
+                >
+                  Your results will appear here.
+                </Typography>
+              </Box>
+            )}
+          </Paper>
         </Grid>
       </Grid>
     </Box>

@@ -45,16 +45,25 @@ export async function POST(request: Request) {
     // Combine the user's prompt with the Prometheus data
     const enhancedPrompt = `
       ${prompt}
-      
-      Here's the current metrics data from our system:
+      These are current metrics data from our containerized system:
       ${JSON.stringify(prometheusData, null, 2)}
-      
-      Please analyze these metrics along with the original prompt and provide insights and recommendations. Limit your response to 500 tokens.
+      Analyze this, along with the original prompt to provide insights and opinions. 
+      Organize response by the four metrics, titled. Ensure there is no bold and no headings formatting. 
+      Create a recommendation section with a list of specific actions.
+      Aim to specify containers/metrics/numbers. Response should be 1000 to 1500 tokens.
     `;
+    //Model 4 seems to have better consistency in response style and length, so it didn't require these specific instructions.
+    //However, 3.5-turbo was used because it was much cheaper at less than $0.005 per 1000 tokens. while 4 was over $0.03 per 1000 tokens.
+    //Currently, running Morpheus containers alone, the prometheus data is about 4 to 6 thousand tokens. The complexity of the data seems to also increase this, because just the prometheus data, with little prompt and very limited token response, would cost 3 to 6 cents per request in gpt-4.
+    //Used 'opinion' in prompt to get more judgement rather than only objective facts
+    //Mentioned formatting because bold results in '**' and headings result in '###'
+    //Organization by metric was used for more clarity
+    //Used 'containers/metrics/numbers' to prevent vague or general sounding responses
 
     // Send the enhanced prompt to OpenAI for analysis
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4-0125-preview',
+      // model: 'gpt-4-0125-preview',
+      model: 'gpt-3.5-turbo',
       messages: [{ role: 'user', content: enhancedPrompt }],
     });
 
