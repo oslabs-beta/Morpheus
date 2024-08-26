@@ -23,13 +23,21 @@ const client = new BedrockRuntimeClient({
 /* DUMMY DATA TO TEST INSTEAD OF ACTUAL CALLS TO BEDROCK */
 router.get('/aws-response', async (req, res) => {
   try {
+    const responseText = `
+Based on the provided Prometheus metrics, here are some suggestions for improving performance:
+
+1. **CPU Usage**:
+   - The CPU usage for all containers is currently at 0%, which suggests that the system is not under high CPU load. This could indicate that the resources allocated to these containers are sufficient or potentially excessive.
+   - Consider monitoring the CPU usage over time and adjusting the CPU resources allocated to each container based on actual load and requirements.
+
+2. **Memory Usage**:
+   - The memory usage for the \`morpheus-grafana\` container is relatively high at 204 MB, while the other containers have lower memory usage.
+   - Ensure that the memory limits and requests for the \`morpheus-grafana\` container are appropriate for its workload. If the memory usage is consistently high, you may need to increase the memory allocation for this container.
+   - Monitor the memory usage over time and adjust the memory resources as needed to prevent out-of-memory issues.
+    `;
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     await delay(4000);
-    res
-      .status(200)
-      .json(
-        'Based on the provided Prometheus metrics, I can provide the following suggestions for performance optimization: 1. **CPU Usage**: - The CPU usage metric is not provided in the data, so I cannot make any specific recommendations. However, if the CPU usage is high, you may want to investigate the underlying processes and see if you can optimize their resource utilization or scale out the infrastructure. 2. **Memory Usage**: - The memory usage data shows that some containers, such as `morpheus-grafana` and `morpheus-prometheus`, are consuming a significant amount of memory (205MB and 84MB, respectively). This could indicate that these containers may be running tasks or services that are memory-intensive. - Consider the following optimizations: - Analyze the memory usage patterns of these containers and identify the root causes of the high memory consumption.'
-      );
+    res.status(200).json(responseText);
   } catch (error) {
     res.status(500).json('hit error: ', error);
   }
@@ -79,6 +87,7 @@ router.get('/aws-response', async (req, res) => {
 //       Array.isArray(parsedBody.content) &&
 //       parsedBody.content.length > 0
 //     ) {
+//       console.log(parsedBody.content[0].text);
 //       res.status(200).send(parsedBody.content[0].text);
 //     } else {
 //       throw new Error('Content array is empty or undefined.');

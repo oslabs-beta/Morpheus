@@ -105,13 +105,8 @@ For details, please read [The definitive guide to docker's default-address-pools
 
 ## Prerequisites
 
-<!-- 1. Node.js v18+ installed (https://nodejs.org/en/download/prebuilt-installer)
-2. TypeScript 3.8+ installed (https://www.typescriptlang.org/download/) -->
-
-3. AWS Account
+1. AWS Account
    - You can just have the root user for now, but we will set up an IAM user below
-   <!-- 4. AWS CLI v2 installed
-   - [Installation guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) -->
 
 ## AWS Setup
 
@@ -120,24 +115,10 @@ For details, please read [The definitive guide to docker's default-address-pools
    1b. Navigate to Amazon Bedrock and click `Get started`
    1c. Look for `Bedrock configurations` and click on `model access` on the bottom left of the sidebar
    1d. Make note of which region you are in on the top right corner
+
    - NOTE: `us-east-1`, in the setup of this repo, was selected for the availability of Claude-3-Haiku, which is the LLM model configured in this application (server/routes/index.js)
    - NOTE: For reference, the region you set up your secrets will need to be in the same region you requested access to AWS Bedrock
      1e. Request for all model access or specifically for Anthropic Claude 3 Haiku
-
-<!-- 2. Set up AWS Secret
-  ### Before creating an IAM user navigate to Github to create a new Personal Access Token
-   2a. Navigate to Github -> Settings -> Developer Settings -> Personal Access Tokens -> Tokens (classic)
-   2b. Click `Generate new token (classic)` and select the following settings:
-      - repo (all)
-      - admin:repo_hook (all)
-    # Don't forget to store your token somewhere safe for future use!
-   2c. Store your new token in AWS SecretsManager
-      - Navigate to the Secrets Manager service (`make sure you are in the same region as your AWS Bedrock model access!`)
-      - Click `Store a new secret`
-      - `Other type of secret` -> `Plaintext`
-      - Delete the JSON object and paste in the Github Access Token from the previous step
-      - Name the token, you can keep it as `github-token` as shown in the `.env` file below, or whichever name you want
-      - No rotation or other configurations for now -->
 
 2. Create an IAM user
    2a. Navigate to the IAM Dashboard Service
@@ -158,8 +139,8 @@ For details, please read [The definitive guide to docker's default-address-pools
    ```
    .env file
 
-   SECRET_ACCESS_KEY = <your secret_access_key>
    ACCESS_KEY_ID = <your access_key_id>
+   SECRET_ACCESS_KEY = <your secret_access_key>
    ```
 
 ### Start server for AWS Bedrock backend

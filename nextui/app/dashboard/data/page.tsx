@@ -4,6 +4,7 @@ import { CssBaseline } from '@mui/material';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import styles from './data.module.scss';
+import ReactMarkdown from 'react-markdown';
 
 type ApiResponse = {
   data: string; // Adjust this based on your actual JSON structure
@@ -87,7 +88,7 @@ export default function DashboardData() {
         )}
       </div>
       <p className={`${styles['data-display']} ${styles[textBoxFadeState]}`}>
-        {typedData}
+        <ReactMarkdown>{typedData}</ReactMarkdown>
       </p>
     </div>
   );
