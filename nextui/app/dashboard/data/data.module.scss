@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 30px; /* Adjust this to match the height of your navbar */
+  box-sizing: border-box;
+  overflow: visible; /* Allow the container to grow without clipping content */
+}
+
+//original styling
+// .aws-btn {
+//   padding: 16px 32px; /* Increase the size */
+//   font-size: 1.25rem; /* Larger text */
+//   font-weight: bold;
+//   border: none;
+//   border-radius: 9999px; /* Fully rounded button */
+//   background-color: #4f46e5; /* Tailwind Indigo-600 equivalent */
+//   color: #ffffff;
+//   cursor: pointer;
+//   transition: background-color 0.3s ease, transform 0.2s ease;
+
+//   &:hover {
+//     background-color: #4338ca; /* Darker Indigo on hover */
+//     transform: scale(1.05); /* Slightly larger on hover */
+//   }
+
+//   &:active {
+//     background-color: #3730a3; /* Even darker on click */
+//     transform: scale(1);
+//   }
+// }
+
+.aws-btn {
+  padding: 20px 40px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(
+    to bottom,
+    #007a6d,
+    #00c4a7
+  ); /* Flipped top to bottom gradient */
+  color: white; /* Black text color */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    background: linear-gradient(
+      to bottom,
+      #006f63,
+      #00b39c
+    ); /* Flipped darker gradient on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  &:active {
+    background: linear-gradient(
+      to bottom,
+      #00655a,
+      #00a18e
+    ); /* Flipped even darker on click */
+    transform: translateY(0);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.logo {
+  height: 30px;
+  margin-right: 10px;
+}
+
+//original display css
+// .data-display {
+//   font-family: 'Roboto', sans-serif;
+//   width: 100%;
+//   max-width: 600px;
+//   padding: 10px 20px;
+//   background-color: #f5f5f5;
+//   border: 1px solid #ccc;
+//   border-radius: 8px;
+//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+//   margin-top: 20px;
+//   word-wrap: break-word;
+//   text-align: left;
+//   overflow: visible; /* Allow the text box to grow without a scrollbar */
+//   min-height: 50px; /* Optional: Initial height of the box */
+// }
+
+.data-display {
+  font-family: 'Roboto', sans-serif;
+  width: 80%;
+  max-width: 1200px;
+  padding: 40px 50px;
+  background: linear-gradient(to bottom, #007a6d, #00c4a7);
+  border-radius: 20px;
+  box-shadow: 8px 8px 15px #bebebe, -8px -8px 20px #ffffff;
+  margin-top: 20px;
+  word-wrap: break-word;
+  text-align: left;
+  overflow: visible;
+  min-height: 50px;
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+  line-height: 1.6;
+  color: #f1f1f1;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Stronger dark text shadow */
+  font-size: 1.8rem;
+}
+
+// High contrast dark mode
+// .data-display {
+//   font-family: 'Roboto', sans-serif;
+//   width: 100%;
+//   max-width: 600px;
+//   padding: 20px 25px;
+//   background-color: #2c2c2c;
+//   color: #f5f5f5;
+//   border: 1px solid #444;
+//   border-radius: 8px;
+//   margin-top: 20px;
+//   word-wrap: break-word;
+//   text-align: left;
+//   overflow: visible;
+//   min-height: 50px;
+//   opacity: 0;
+//   transition: opacity 2s ease-in-out;
+//   line-height: 1.6;
+// }
+
+.aws-btn {
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}
+
+.data-display {
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+}
+
+.fade-out {
+  opacity: 0;
+}
+
+.fade-in {
+  opacity: 1;
+}
+
+.button-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the spinner horizontally */
+}
+
+.loading-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #4f46e5; /* Color of the spinner */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-top: 10px;
+  opacity: 1; /* Ensure default opacity is 1 */
+  transition: opacity 0.5s ease-in-out;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-spinner.fade-out {
+  opacity: 0;
+}
+
+.loading-spinner.fade-in {
+  opacity: 1;
+}
