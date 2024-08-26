@@ -20,21 +20,22 @@ const client = new BedrockRuntimeClient({
   },
 });
 
-// router.get('/aws-response', async (req, res) => {
-//   try {
-//     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-//     await delay(4000);
-//     res
-//       .status(200)
-//       .json(
-// "Based on the provided Prometheus metrics, I can provide the following suggestions for performance optimization: 1. **CPU Usage**: - The CPU usage metric is not provided in the data, so I cannot make any specific recommendations. However, if the CPU usage is high, you may want to investigate the underlying processes and see if you can optimize their resource utilization or scale out the infrastructure. 2. **Memory Usage**: - The memory usage data shows that some containers, such as `morpheus-grafana` and `morpheus-prometheus`, are consuming a significant amount of memory (205MB and 84MB, respectively). This could indicate that these containers may be running tasks or services that are memory-intensive. - Consider the following optimizations: - Analyze the memory usage patterns of these containers and identify the root causes of the high memory consumption. This may involve profiling the applications or services running in the containers. - Optimize the configuration and resource settings of these containers to ensure they are running with the optimal amount of memory. This may involve adjusting memory limits or requests, or optimizing the application code to reduce memory usage. - If the high memory usage is necessary for the application's functionality, consider scaling out the infrastructure to provide more memory resources. 3. **Network Receive and Network Transmit**: - The network receive and transmit metrics are not provided in the data, so I cannot make any specific recommendations. - If you observe high network utilization, you may want to investigate the network traffic patterns and identify any potential bottlenecks or areas for optimization. This could include: - Ensuring that network resources (bandwidth, network interfaces, etc.) are scaled appropriately to handle the workload. - Identifying and optimizing any network-intensive processes or services within your application. - Implementing network-level optimizations, such as load balancing, caching, or content delivery strategies, to improve network efficiency. Overall, the provided metrics suggest that you may want to focus on optimizing the memory usage of your containers, particularly the `morpheus-grafana` and `morpheus-prometheus` containers. Additionally, if you observe any significant CPU or network utilization issues, you should investigate those as well. Remember that the effectiveness of these optimizations will depend on the specific context and requirements of your application, so it's essential to monitor the metrics, analyze the performance patterns, and make informed decisions based on your application's needs.
-// "
-//       );
-//   } catch (error) {
-//     res.status(500).json('hit error: ', error);
-//   }
-// });
+/* DUMMY DATA TO TEST INSTEAD OF ACTUAL CALLS TO BEDROCK */
+router.get('/aws-response', async (req, res) => {
+  try {
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    await delay(4000);
+    res
+      .status(200)
+      .json(
+        'Based on the provided Prometheus metrics, I can provide the following suggestions for performance optimization: 1. **CPU Usage**: - The CPU usage metric is not provided in the data, so I cannot make any specific recommendations. However, if the CPU usage is high, you may want to investigate the underlying processes and see if you can optimize their resource utilization or scale out the infrastructure. 2. **Memory Usage**: - The memory usage data shows that some containers, such as `morpheus-grafana` and `morpheus-prometheus`, are consuming a significant amount of memory (205MB and 84MB, respectively). This could indicate that these containers may be running tasks or services that are memory-intensive. - Consider the following optimizations: - Analyze the memory usage patterns of these containers and identify the root causes of the high memory consumption.'
+      );
+  } catch (error) {
+    res.status(500).json('hit error: ', error);
+  }
+});
 
+/* ACTUAL ROUTE TO PERFORM CALLS TO BEDROCK */
 // router.get('/aws-response', async (req, res) => {
 //   try {
 //     const metrics = await getMetrics();
