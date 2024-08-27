@@ -4,18 +4,19 @@ services:
   # The UI/Backend
   morpheus:
     build:
-      no_cache: true
       context: ..
       dockerfile: morpheus/dockerfile.dev
     container_name: morpheus
+    restart: unless-stopped
     environment:
       - MODE=browser
       - STATUS=development
     volumes:
       # Opens the docker sock and creates named volumes for persistent data that can be shared between containers
-      # - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
       - morpheus-prometheus-files:/prometheus
       - morpheus-grafana-files:/grafana
+      - morpheus-initsql:/postgres
     # ports:
     #   - 3001:3001
 
@@ -24,6 +25,7 @@ services:
     # The morpheus image uploaded is on gcr.io/cadvisor/cadvisor:v0.47.1
     image: gcr.io/cadvisor/cadvisor:v0.49.1
     container_name: morpheus-cadvisor
+    restart: unless-stopped
     expose:
       - 8080
     ports:
@@ -38,7 +40,6 @@ services:
       - /:/rootfs:ro
       - /dev/disk/:/dev/disk:ro
     privileged: true
-    restart: unless-stopped
     devices:
       - /dev/kmsg
 
@@ -64,7 +65,6 @@ services:
       - --path.sysfs=/host/sys
       - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
       - --log.level=error
-
 
   # Collects metrics and makes them available at localhost:9090
   prometheus:
@@ -92,6 +92,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: morpheus-grafana
+    restart: unless-stopped
     expose:
       - 3000
     ports:
@@ -103,7 +104,28 @@ services:
     depends_on:
       - prometheus
 
+  # Store metrics gathered from containers at localhost:5432
+  postgres:
+    image: postgres:16.4-alpine3.20
+    container_name: morpheus-postgres
+    restart: unless-stopped
+    expose:
+      - 5432
+    ports:
+      - 50005:5432
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+      - morpheus-initsql:/docker-entrypoint-initdb.d/
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=morpheus
+    depends_on:
+      - morpheus
+
 volumes:
   morpheus-prometheus-data:
   morpheus-prometheus-files:
   morpheus-grafana-files:
+  morpheus-initsql:
+  postgres_volume:
