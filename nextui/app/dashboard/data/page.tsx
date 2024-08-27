@@ -30,6 +30,7 @@ export default function DashboardData() {
 
     try {
       const response = await axios.get('/api/aws-bedrock');
+      console.log(response.data);
       setData(response.data);
       setIsLoading(false);
       setTextBoxFadeState('fade-in'); // Start fading in the text box
@@ -89,9 +90,9 @@ export default function DashboardData() {
           ></div>
         )}
       </div>
-      <p className={`${styles['data-display']} ${styles[textBoxFadeState]}`}>
+      <div className={`${styles['data-display']} ${styles[textBoxFadeState]}`}>
         <ReactMarkdown>{typedData}</ReactMarkdown>
-      </p>
+      </div>
     </div>
   );
 }
