@@ -47,9 +47,8 @@ export async function POST(request: Request) {
       ${prompt}
       These are current metrics data from our containerized system:
       ${JSON.stringify(prometheusData, null, 2)}
-      Analyze this, along with the original prompt to provide insights and opinions. 
-      Organize response by the four metrics, titled. Ensure there is no bold and no headings formatting. 
-      Create a recommendation section with a list of specific actions.
+      Analyze this, along with the original prompt to provide insights and your opinions. Never use any bold or heading formatting in your response.
+      Organize response by the metrics. Add a recommendation section with a list of specific actions.
       Aim to specify containers/metrics/numbers. Response should be 1000 to 1500 tokens.
     `;
     //Model 4 seems to have better consistency in response style and length, so it didn't require these specific instructions.

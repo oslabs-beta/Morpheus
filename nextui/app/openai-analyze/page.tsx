@@ -9,13 +9,21 @@ import {
   Paper,
   CircularProgress,
   Grid,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
+
+// Left input text box that is 1/3 of the page, with drop down menu to choose from different models.
+// Upon click, the input and prometheus data from prometheus-query are sent to openAI. Results appear to the right in a box that takes 2/3rds of the page.
 
 export default function OpenAIAnalyzeMetrics() {
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [model, setModel] = useState('gpt-3.5-turbo');
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -26,7 +34,7 @@ export default function OpenAIAnalyzeMetrics() {
       const res = await fetch('/api/openai-analyze-metrics', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt, model }),
       });
 
       if (!res.ok) {
@@ -48,8 +56,6 @@ export default function OpenAIAnalyzeMetrics() {
       sx={{
         flexGrow: 1,
         p: 2,
-        // bgcolor: 'gray',
-        // color: 'white',
       }}
     >
       <Grid container spacing={4}>
@@ -57,12 +63,24 @@ export default function OpenAIAnalyzeMetrics() {
           <Typography
             variant='h3'
             fontFamily={'avenir'}
-            // fontWeight={'bold'}
             gutterBottom
             sx={{ mt: 5, mb: 5 }}
           >
             OpenAI Analysis
           </Typography>
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel id='model-select-label'>Model</InputLabel>
+            <Select
+              labelId='model-select-label'
+              value={model}
+              label='Model'
+              onChange={(e) => setModel(e.target.value)}
+            >
+              <MenuItem value='gpt-3.5-turbo'>GPT-3.5 Turbo</MenuItem>
+              <MenuItem value='gpt-4o-mini'>GPT-4o Mini</MenuItem>
+              <MenuItem value='gpt-4o'>GPT-4o</MenuItem>
+            </Select>
+          </FormControl>
           <TextField
             fullWidth
             multiline
@@ -96,7 +114,7 @@ export default function OpenAIAnalyzeMetrics() {
         </Grid>
         <Grid item xs={12} md={8}>
           <Paper
-            elevation={2} //for shadow effect
+            elevation={2}
             sx={{
               p: 2,
               mt: 2,

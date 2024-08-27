@@ -36,14 +36,13 @@ export default function BedrockTest2() {
       const prometheusData = await prometheusResponse.json();
 
       // Enhance the user's prompt with the fetched Prometheus data
-      const enhancedPrompt = `
-        ${prompt}
-        
-        Here's the current metrics data from our system:
-        ${JSON.stringify(prometheusData, null, 2)}
-        
-        Please analyze these metrics and provide insights and optimization suggestions.
-      `;
+      const enhancedPrompt = `Human: ${prompt}
+These are current metrics data from our containerized system:
+${JSON.stringify(prometheusData, null, 2)}
+Analyze this, along with the original prompt to provide insights and opinions. 
+Organize response by the four metrics, titled. Ensure there is no bold and no headings formatting. 
+Create a recommendation section with a list of specific actions.
+Aim to specify containers/metrics/numbers. Response should be 1000 to 1500 tokens.`;
 
       // Send the enhanced prompt to the Bedrock API for analysis
       const bedrockResponse = await fetch('/api/bedrock-analyze', {
@@ -101,8 +100,11 @@ export default function BedrockTest2() {
             <MenuItem value='anthropic.claude-instant-v1'>
               Anthropic Claude Instant
             </MenuItem>
-            <MenuItem value='amazon.titan-text-express-v1:0:8k'>
+            {/* <MenuItem value='amazon.titan-text-express-v1:0:8k'>
               Amazon Titan Text Express
+            </MenuItem> */}
+            <MenuItem value='anthropic.claude-3-haiku-20240307-v1:0'>
+              Anthropic Claude 3 Haiku
             </MenuItem>
           </Select>
         </FormControl>
