@@ -1,3 +1,45 @@
+# Setting Up AWS Credentials & Bedrock
+
+## Prerequisites
+
+1. AWS Account
+   - You can just have the root user for now, but we will set up an IAM user below
+
+## AWS Setup
+
+1. Set up access to AWS Bedrock LLM modes
+   1a. Login into your AWS account
+   1b. Navigate to Amazon Bedrock and click `Get started`
+   1c. Look for `Bedrock configurations` and click on `model access` on the bottom left of the sidebar
+   1d. Make note of which region you are in on the top right corner
+
+   - NOTE: `us-east-1`, in the setup of this repo, was selected for the availability of Claude-3-Haiku, which is the LLM model configured in this application (server/routes/index.js)
+   - NOTE: For reference, the region you set up your secrets will need to be in the same region you requested access to AWS Bedrock
+     1e. Request for all model access or specifically for Anthropic Claude 3 Haiku
+
+2. Create an IAM user
+   2a. Navigate to the IAM Dashboard Service
+   2b. In the sidebar on the left, under `Access management` click on `Users`
+   2c. Click `Create user`, name your new user something you will remember (e.g. `morpheus`), and do NOT click the check box for `Provide user access to the AWS Management Console`!
+
+   - Under `Permissions options` select `Attach policies directly` and search for the permission policy `AmazonBedrockFullAccess` and select that policy
+   - Click `Next` and then click `Create user`
+     2d. Create an Access Key for the IAM user
+   - Back on the `Users` page click on the new user you just created and click `Create access key`
+   - For simplicity select `Other` -> `Next` -> `Create access key`, and now save your Access key and Secret access key somewhere secure
+
+3. Setup credentials in the repo
+   3a. In Vscode's file explorer navigate to `nextui` -> `app`
+   3b. Create a new file called `.env.local`
+   3c. Setup your .env.local file to mirror this example:
+
+   ```
+   .env.local file
+
+   ACCESS_KEY_ID = <your access_key_id>
+   SECRET_ACCESS_KEY = <your secret_access_key>
+   ```
+
 # Setting Up Dev Environment
 
 - Please note that you can pull at most 200 images in 6 hours from docker hub, so don't delete images and the cache when you don't need to.
@@ -100,61 +142,6 @@ To expand network capacity, add the following to `/etc/docker/daemon.json`
 ```
 
 For details, please read [The definitive guide to docker's default-address-pools option](https://straz.to/2021-09-08-docker-address-pools/)
-
-# Setting Up AWS Credentials & Bedrock
-
-## Prerequisites
-
-1. AWS Account
-   - You can just have the root user for now, but we will set up an IAM user below
-
-## AWS Setup
-
-1. Set up access to AWS Bedrock LLM modes
-   1a. Login into your AWS account
-   1b. Navigate to Amazon Bedrock and click `Get started`
-   1c. Look for `Bedrock configurations` and click on `model access` on the bottom left of the sidebar
-   1d. Make note of which region you are in on the top right corner
-
-   - NOTE: `us-east-1`, in the setup of this repo, was selected for the availability of Claude-3-Haiku, which is the LLM model configured in this application (server/routes/index.js)
-   - NOTE: For reference, the region you set up your secrets will need to be in the same region you requested access to AWS Bedrock
-     1e. Request for all model access or specifically for Anthropic Claude 3 Haiku
-
-2. Create an IAM user
-   2a. Navigate to the IAM Dashboard Service
-   2b. In the sidebar on the left, under `Access management` click on `Users`
-   2c. Click `Create user`, name your new user something you will remember (e.g. `morpheus`), and do NOT click the check box for `Provide user access to the AWS Management Console`!
-
-   - Under `Permissions options` select `Attach policies directly` and search for the permission policy `AmazonBedrockFullAccess` and select that policy
-   - Click `Next` and then click `Create user`
-     2d. Create an Access Key for the IAM user
-   - Back on the `Users` page click on the new user you just created and click `Create access key`
-   - For simplicity select `Other` -> `Next` -> `Create access key`, and now save your Access key and Secret access key somewhere secure
-
-3. Setup credentials in the repo
-   3a. Within the terminal, change directory to Morpheus/server
-   3b. npm install
-   3c. Setup your .env file to mirror this example:
-
-   ```
-   .env file
-
-   ACCESS_KEY_ID = <your access_key_id>
-   SECRET_ACCESS_KEY = <your secret_access_key>
-   ```
-
-### Start server for AWS Bedrock backend
-
-```
-# For Dev and nodemon
- cd server
- npm run dev
-
-# For client
- cd server
- npm run start
-
-```
 
 ## Troubleshooting
 
