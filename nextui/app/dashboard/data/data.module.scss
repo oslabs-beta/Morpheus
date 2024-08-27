@@ -79,42 +79,20 @@
   margin-right: 10px;
 }
 
-//original display css
-// .data-display {
-//   font-family: 'Roboto', sans-serif;
-//   width: 100%;
-//   max-width: 600px;
-//   padding: 10px 20px;
-//   background-color: #f5f5f5;
-//   border: 1px solid #ccc;
-//   border-radius: 8px;
-//   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-//   margin-top: 20px;
-//   word-wrap: break-word;
-//   text-align: left;
-//   overflow: visible; /* Allow the text box to grow without a scrollbar */
-//   min-height: 50px; /* Optional: Initial height of the box */
-// }
-
 .data-display {
   font-family: 'Roboto', sans-serif;
-  width: 80%;
-  max-width: 1200px;
-  padding: 40px 50px;
-  background: linear-gradient(to bottom, #007a6d, #00c4a7);
-  border-radius: 20px;
-  box-shadow: 8px 8px 15px #bebebe, -8px -8px 20px #ffffff;
+  width: 100%;
+  max-width: 600px;
+  padding: 10px 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 20px;
   word-wrap: break-word;
   text-align: left;
-  overflow: visible;
-  min-height: 50px;
-  opacity: 0;
-  transition: opacity 2s ease-in-out;
-  line-height: 1.6;
-  color: #f1f1f1;
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Stronger dark text shadow */
-  font-size: 1.8rem;
+  overflow: visible; /* Allow the text box to grow without a scrollbar */
+  min-height: 50px; /* Optional: Initial height of the box */
 }
 
 // High contrast dark mode

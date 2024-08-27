@@ -29,9 +29,7 @@ export default function DashboardData() {
     }, 1000); // 1s for button fade-out
 
     try {
-      const response = await axios.get(
-        'http://localhost:5000/api/aws-response'
-      );
+      const response = await axios.get('/api/aws-bedrock');
       setData(response.data);
       setIsLoading(false);
       setTextBoxFadeState('fade-in'); // Start fading in the text box
@@ -63,6 +61,10 @@ export default function DashboardData() {
       }, typingDelay);
     }
   }, [data]);
+
+  // useEffect(() => {
+  //   setTypedData(data); // Test with a full block of text
+  // }, [data]);
 
   return (
     <div className={styles.container}>
