@@ -7,20 +7,20 @@ import podImage from '../../public/pod-128.png';
 import serviceImage from '../../public/svc-128.png';
 import deploymentImage from '../../public/deploy-128.png';
 import './clusterView.css';
-import AIChat from './AIChat';
-import { Box, Grid } from '@mui/material';
+import AIChatApi from './aichat-api';
+import { Box, Grid, Typography } from '@mui/material';
 
-const Dashboard2 = () => {
+const DashboardAichat = () => {
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
   const [loading, setLoading] = useState(true);
-  const [clusterData, setClusterData] = useState({});
+  const [clusterData, setclusterData] = useState({});
 
   useEffect(() => {
     fetch('/api/v1/clusterview')
       .then((response) => response.json())
       .then((data) => {
         const { nodes, edges } = processClusterData(data);
-        setClusterData(data);
+        setclusterData(data);
         setGraphData({ nodes, edges });
         setLoading(false);
       })
@@ -38,8 +38,8 @@ const Dashboard2 = () => {
     clusterData.nodes.forEach((node, index) => {
       nodes.push({
         id: `node-${index}`,
-        label: `${node}`, // label would be the same thing
-        title: `Node: ${node}`, // label would be the same thing
+        label: `${node}`,
+        title: `Node: ${node}`,
         shape: 'image',
         image: nodeImage.src,
         size: 40,
@@ -58,7 +58,6 @@ const Dashboard2 = () => {
 
       // Create edges from Node to Pod
       const nodeIndex = clusterData.nodes.indexOf(pod.nodeName);
-      console.log(nodeIndex);
       if (nodeIndex !== -1) {
         edges.push({
           from: `node-${nodeIndex}`,
@@ -107,7 +106,7 @@ const Dashboard2 = () => {
         image: deploymentImage.src,
       });
 
-      // Create edges from Deployment to Pod (based on naming convention or //label matching)
+      // Create edges from Deployment to Pod (based on naming convention or label matching)
       clusterData.pods.forEach((pod, podIndex) => {
         if (pod.name.includes(deployment)) {
           edges.push({
@@ -124,16 +123,37 @@ const Dashboard2 = () => {
 
   const graphOptions = {
     layout: {
-      hierarchical: false, // try switching to true
+      hierarchical: false,
     },
     edges: {
       color: '#000000',
     },
-    height: '1400px',
-    width: '2400px',
+    height: '100%',
+    width: '100%',
     interaction: {
       hover: true,
-      // tooltipDelay: 250,
+      dragNodes: true,
+      dragView: true,
+      zoomView: true,
+    },
+    physics: {
+      enabled: true,
+      stabilization: {
+        enabled: true,
+        iterations: 1000,
+        fit: true,
+      },
+      solver: 'forceAtlas2Based',
+      forceAtlas2Based: {
+        gravitationalConstant: -50,
+        centralGravity: 0.01,
+        springLength: 100,
+        springConstant: 0.08,
+      },
+      maxVelocity: 50,
+      minVelocity: 0.1,
+      timestep: 0.5,
+      adaptiveTimestep: true,
     },
   };
 
@@ -151,15 +171,26 @@ const Dashboard2 = () => {
     <Box sx={{ flexGrow: 1, height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
       <Grid container spacing={2} sx={{ height: '100%' }}>
         <Grid item xs={12} md={4} sx={{ height: '100%', overflowY: 'auto' }}>
-          <AIChat />
+          <Box sx={{ padding: 2 }}>
+            <Typography
+              variant='h3'
+              fontFamily={'Open Sans, sans-serif'}
+              gutterBottom
+              sx={{ mt: 5, mb: 5 }}
+            >
+              AI Analysis
+            </Typography>
+            <AIChatApi />
+          </Box>
         </Grid>
-        <Grid item xs={12} md={8} sx={{ height: '100%', overflowY: 'auto' }}>
+        <Grid item xs={12} md={8} sx={{ height: '100%', overflow: 'hidden' }}>
           <Box
             sx={{
               border: '1px solid #ccc',
               borderRadius: '4px',
               p: 2,
               height: '100%',
+              overflow: 'auto',
             }}
           >
             <Graph graph={graphData} options={graphOptions} events={events} />
@@ -170,4 +201,4 @@ const Dashboard2 = () => {
   );
 };
 
-export default Dashboard2;
+export default DashboardAichat;
