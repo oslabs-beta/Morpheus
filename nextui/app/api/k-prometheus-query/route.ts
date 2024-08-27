@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import { RateLimiter } from 'limiter';
 
-// The metrics here are for Prometheus metrics available without Kubernetes. See k-prometheus-query for Kubernetes queries
+// Need to test these out, maybe need to use averages in queries, to shorten results and reduce token use when sending to Bedrock
+// The metrics here are for Kubernetes. See prometheus-query for container queries
 // This queries eight metrics, for whatis usually considered most important: container count, container uptime average, CPU, memory, disk I/O read and write, network receive and transmit
 
+// Need Kubernetes specific Prometheus URL?
 // Set the Prometheus URL, defaulting to localhost if not provided in environment variables
 const PROMETHEUS_URL = process.env.PROMETHEUS_URL || 'http://localhost:50002';
 
@@ -32,57 +34,69 @@ export async function GET(request: Request) {
     // Each query is an object with a name (for identification), the PromQL query string, unit, and description
     const queries = [
       {
+        name: 'API Server Availability',
+        query: 'apiserver_request:availability30d',
+        unit: 'ratio',
+        description: 'Availability of the API server over the last 30 days',
+      },
+      {
+        name: 'Node CPU Utilization',
+        query: 'node:node_cpu_utilization:ratio_rate5m',
+        unit: 'ratio',
+        description: 'CPU utilization ratio per node over 5 minutes',
+      },
+      {
+        name: 'Node Memory Available',
+        query: ':node_memory_MemAvailable_bytes:sum',
+        unit: 'bytes',
+        description: 'Available memory across all nodes',
+      },
+      {
+        name: 'Pod CPU Usage',
+        query:
+          'sum(rate(container_cpu_usage_seconds_total{image!=""}[5m])) by (pod)',
+        unit: 'cores',
+        description: 'CPU usage rate by pod over 5 minutes',
+      },
+      {
+        name: 'Pod Memory Usage',
+        query: 'sum(container_memory_working_set_bytes{image!=""}) by (pod)',
+        unit: 'bytes',
+        description: 'Current memory usage by pod',
+      },
+      {
+        name: 'API Server Request Latency',
+        query:
+          'histogram_quantile(0.99, sum(rate(apiserver_request_duration_seconds_bucket[5m])) by (le, verb))',
+        unit: 'seconds',
+        description: '99th percentile of API server request latency',
+      },
+      {
+        name: 'Kubelet PLEG Relist Duration',
+        query:
+          'node_quantile:kubelet_pleg_relist_duration_seconds:histogram_quantile{quantile="0.99"}',
+        unit: 'seconds',
+        description: '99th percentile of Kubelet PLEG relist duration',
+      },
+      {
         name: 'Container Count',
-        query: 'count(container_last_seen)',
+        query: 'count(container_last_seen{image!=""})',
         unit: 'containers',
         description: 'Total number of containers',
       },
       {
-        name: 'Container Uptime Average',
-        query: 'avg(time() - container_start_time_seconds)',
-        unit: 'seconds',
-        description: 'Average uptime of containers',
-      },
-      {
-        name: 'CPU Usage',
+        name: 'Disk Usage',
         query:
-          'sum(rate(container_cpu_usage_seconds_total{name=~".+"}[5m])) by (name)',
-        unit: 'cores',
-        description: 'CPU usage rate over 5 minutes',
+          '(node_filesystem_size_bytes - node_filesystem_free_bytes) / node_filesystem_size_bytes * 100',
+        unit: 'percent',
+        description: 'Disk usage percentage',
       },
       {
-        name: 'Memory Usage',
-        query: 'sum(container_memory_usage_bytes{name=~".+"}) by (name)',
-        unit: 'bytes',
-        description: 'Current memory usage',
-      },
-      {
-        name: 'Disk I/O Read',
+        name: 'Network Traffic',
         query:
-          'sum(rate(container_fs_reads_bytes_total{name!=""}[5m])) by (name)',
-        unit: 'bytes/s',
-        description: 'Disk read rate over 5 minutes',
-      },
-      {
-        name: 'Disk I/O Write',
-        query:
-          'sum(rate(container_fs_writes_bytes_total{name!=""}[5m])) by (name)',
-        unit: 'bytes/s',
-        description: 'Disk write rate over 5 minutes',
-      },
-      {
-        name: 'Network Receive',
-        query:
-          'sum(rate(container_network_receive_bytes_total{name=~".+"}[5m])) by (name)',
-        unit: 'bytes/s',
-        description: 'Network receive rate over 5 minutes',
-      },
-      {
-        name: 'Network Transmit',
-        query:
-          'sum(rate(container_network_transmit_bytes_total{name=~".+"}[5m])) by (name)',
-        unit: 'bytes/s',
-        description: 'Network transmit rate over 5 minutes',
+          'sum(rate(container_network_receive_bytes_total[5m])) + sum(rate(container_network_transmit_bytes_total[5m]))',
+        unit: 'bytes/sec',
+        description: 'Total network traffic (receive + transmit)',
       },
     ];
 
@@ -130,11 +144,11 @@ export async function GET(request: Request) {
     return NextResponse.json(formattedResults);
   } catch (error) {
     // Log the error for server-side debugging
-    console.error('Error fetching container Prometheus data:', error);
+    console.error('Error fetching Kubernetes Prometheus data:', error);
 
     // Return a 500 error response to the client
     return NextResponse.json(
-      { error: 'Failed to fetch container Prometheus data' },
+      { error: 'Failed to fetch Kubernetes Prometheus data' },
       { status: 500 }
     );
   }
