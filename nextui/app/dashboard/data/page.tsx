@@ -4,6 +4,7 @@ import { CssBaseline } from '@mui/material';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import styles from './data.module.scss';
+import ReactMarkdown from 'react-markdown';
 
 type ApiResponse = {
   data: string; // Adjust this based on your actual JSON structure
@@ -28,9 +29,8 @@ export default function DashboardData() {
     }, 1000); // 1s for button fade-out
 
     try {
-      const response = await axios.get(
-        'http://localhost:5000/api/aws-response'
-      );
+      const response = await axios.get('/api/aws-bedrock');
+      console.log(response.data);
       setData(response.data);
       setIsLoading(false);
       setTextBoxFadeState('fade-in'); // Start fading in the text box
@@ -63,6 +63,10 @@ export default function DashboardData() {
     }
   }, [data]);
 
+  // useEffect(() => {
+  //   setTypedData(data); // Test with a full block of text
+  // }, [data]);
+
   return (
     <div className={styles.container}>
       <CssBaseline />
@@ -86,9 +90,9 @@ export default function DashboardData() {
           ></div>
         )}
       </div>
-      <p className={`${styles['data-display']} ${styles[textBoxFadeState]}`}>
-        {typedData}
-      </p>
+      <div className={`${styles['data-display']} ${styles[textBoxFadeState]}`}>
+        <ReactMarkdown>{typedData}</ReactMarkdown>
+      </div>
     </div>
   );
 }
