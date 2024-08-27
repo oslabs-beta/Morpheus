@@ -7,6 +7,7 @@ services:
       context: ..
       dockerfile: morpheus/dockerfile.dev
     container_name: morpheus
+    restart: unless-stopped
     environment:
       - MODE=browser
       - STATUS=development
@@ -24,6 +25,7 @@ services:
     # The morpheus image uploaded is on gcr.io/cadvisor/cadvisor:v0.47.1
     image: gcr.io/cadvisor/cadvisor:v0.49.1
     container_name: morpheus-cadvisor
+    restart: unless-stopped
     expose:
       - 8080
     ports:
@@ -38,7 +40,6 @@ services:
       - /:/rootfs:ro
       - /dev/disk/:/dev/disk:ro
     privileged: true
-    restart: unless-stopped
     devices:
       - /dev/kmsg
 
@@ -91,6 +92,7 @@ services:
   grafana:
     image: grafana/grafana:latest
     container_name: morpheus-grafana
+    restart: unless-stopped
     expose:
       - 3000
     ports:
@@ -106,6 +108,7 @@ services:
   postgres:
     image: postgres:16.4-alpine3.20
     container_name: morpheus-postgres
+    restart: unless-stopped
     expose:
       - 5432
     ports:
