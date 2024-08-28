@@ -7,20 +7,19 @@ import podImage from '../../public/pod-128.png';
 import serviceImage from '../../public/svc-128.png';
 import deploymentImage from '../../public/deploy-128.png';
 import './clusterView.css';
-import AIChat from './aichat';
-import { Box, Grid } from '@mui/material';
 
-const Dashboard2 = () => {
+const Dashboard = () => {
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
   const [loading, setLoading] = useState(true);
-  const [clusterData, setClusterData] = useState({});
+  const [clusterData, setclusterData] = useState({});
 
   useEffect(() => {
     fetch('/api/v1/clusterview')
       .then((response) => response.json())
       .then((data) => {
         const { nodes, edges } = processClusterData(data);
-        setClusterData(data);
+        setclusterData(data);
+
         setGraphData({ nodes, edges });
         setLoading(false);
       })
@@ -146,28 +145,11 @@ const Dashboard2 = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
-
   return (
-    <Box sx={{ flexGrow: 1, height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
-      <Grid container spacing={2} sx={{ height: '100%' }}>
-        <Grid item xs={12} md={4} sx={{ height: '100%', overflowY: 'auto' }}>
-          <AIChat />
-        </Grid>
-        <Grid item xs={12} md={8} sx={{ height: '100%', overflowY: 'auto' }}>
-          <Box
-            sx={{
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              p: 2,
-              height: '100%',
-            }}
-          >
-            <Graph graph={graphData} options={graphOptions} events={events} />
-          </Box>
-        </Grid>
-      </Grid>
-    </Box>
+    <div>
+      <Graph graph={graphData} options={graphOptions} events={events} />
+    </div>
   );
 };
 
-export default Dashboard2;
+export default Dashboard;

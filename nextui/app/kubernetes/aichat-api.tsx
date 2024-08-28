@@ -15,7 +15,7 @@ const AIChatApi: React.FC = () => {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>(
     []
   );
-  const [model, setModel] = useState('gpt-3.5-turbo');
+  const [model, setModel] = useState('gpt-4o');
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 

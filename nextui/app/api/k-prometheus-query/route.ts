@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { RateLimiter } from 'limiter';
 
+// The example project uses a Kubernetes API useing the kubernetes/client-node library to get data to pass to AI
+// See below all code, for their method
+
 // Need to test these out, maybe need to use averages in queries, to shorten results and reduce token use when sending to Bedrock
 // The metrics here are for Kubernetes. See prometheus-query for container queries
 // This queries eight metrics, for whatis usually considered most important: container count, container uptime average, CPU, memory, disk I/O read and write, network receive and transmit
@@ -153,3 +156,52 @@ export async function GET(request: Request) {
     );
   }
 }
+
+// The example project uses a Kubernetes API useing the kubernetes/client-node library to get data to pass to AI
+// This is the 'clusterController'
+
+// const k8s = require('@kubernetes/client-node');
+// const clusterController = {};
+
+// clusterController.fetchk8sComponents = async (req, res) => {
+//   const kc = new k8s.KubeConfig();
+//   kc.loadFromDefault();
+
+//   const coreApi = kc.makeApiClient(k8s.CoreV1Api);
+//   const appsApi = kc.makeApiClient(k8s.AppsV1Api);
+
+//   try {
+//     const nodes = await coreApi.listNode();
+//     const pods = await coreApi.listPodForAllNamespaces();
+//     const services = await coreApi.listServiceForAllNamespaces();
+//     const deployments = await appsApi.listDeploymentForAllNamespaces();
+
+//     //Create a map of services to pods based on selectors
+//     const serviceToPods = services.body.items.reduce((acc, service) => {
+//       const matchingPods = pods.body.items
+//         .filter((pod) =>
+//           matchLabels(pod.metadata.labels, service.spec.selector)
+//         )
+//         .map((pod) => pod.metadata.name);
+
+//       acc[service.metadata.name] = matchingPods;
+//       return acc;
+//     }, {});
+
+//     res.json({
+//       nodes: nodes.body.items.map((node) => node.metadata.name),
+//       pods: pods.body.items.map((pod) => ({
+//         name: pod.metadata.name,
+//         nodeName: pod.spec.nodeName,
+//       })),
+//       services: services.body.items.map((service) => service.metadata.name),
+//       serviceToPods,
+//       deployments: deployments.body.items.map(
+//         (deployment) => deployment.metadata.name
+//       ),
+//     });
+//   } catch (err) {
+//     console.error('Error fetching Kubernetes components:', err);
+//     res.status(500).send('Error fetching Kubernetes components');
+//   }
+// };
