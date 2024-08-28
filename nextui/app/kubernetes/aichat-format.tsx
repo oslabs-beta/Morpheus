@@ -9,12 +9,15 @@ interface AIChatProps {
 const AIChat: React.FC<AIChatProps> = ({ messages }) => {
   return (
     <Paper
+      elevation={0}
       sx={{
         flexGrow: 1,
         overflowY: 'auto',
         p: 2,
         display: 'flex',
         flexDirection: 'column',
+        border: '2px solid', // Add a border
+        borderColor: 'divider', // Use theme's divider color
       }}
     >
       {messages.length === 0 ? (
@@ -34,7 +37,7 @@ const AIChat: React.FC<AIChatProps> = ({ messages }) => {
           </Typography>
         </Box>
       ) : (
-        messages.map((message, index) => (
+        [...messages].reverse().map((message, index) => (
           <Box key={index} sx={{ mb: 2 }}>
             <Typography variant='subtitle2' sx={{ fontWeight: 'bold' }}>
               {message.role === 'user' ? 'You' : 'AI'}:

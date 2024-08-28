@@ -55,21 +55,27 @@ const AIChatApi: React.FC = () => {
   };
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Box
+      sx={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       {/* <Typography variant='h6' sx={{ mb: 2 }}>
         AI Analysis
       </Typography> */}
 
       <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel id='model-select-label'>Model</InputLabel>
+        <InputLabel id='model-select-label'>OpenAI Model</InputLabel>
         <Select
           labelId='model-select-label'
           value={model}
-          label='Model'
+          label='OpenAI Model'
           onChange={(e) => setModel(e.target.value)}
         >
-          <MenuItem value='gpt-3.5-turbo'>GPT-3.5 Turbo</MenuItem>
           <MenuItem value='gpt-4o'>GPT-4o</MenuItem>
+          <MenuItem value='gpt-3.5-turbo'>GPT-3.5 Turbo</MenuItem>
           <MenuItem value='gpt-4'>GPT-4</MenuItem>
         </Select>
       </FormControl>
