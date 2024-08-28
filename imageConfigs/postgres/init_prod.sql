@@ -23,5 +23,13 @@ CREATE TABLE snapshots(
   available_memory varchar NOT NULL
 );
 
+CREATE TABLE usersettings(
+    firstname varchar NOT NULL,
+    lastname varchar NOT NULL,
+    email varchar PRIMARY KEY NOT NULL
+);
+
 ALTER TABLE dashboards OWNER TO admin;
 ALTER TABLE services OWNER TO admin;
+ALTER TABLE snapshots OWNER TO admin;
+ALTER TABLE usersettings OWNER to admin;
