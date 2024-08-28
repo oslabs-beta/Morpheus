@@ -56,9 +56,23 @@ const AIChatApi: React.FC = () => {
 
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Typography variant='h6' sx={{ mb: 2 }}>
+      {/* <Typography variant='h6' sx={{ mb: 2 }}>
         AI Analysis
-      </Typography>
+      </Typography> */}
+
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel id='model-select-label'>Model</InputLabel>
+        <Select
+          labelId='model-select-label'
+          value={model}
+          label='Model'
+          onChange={(e) => setModel(e.target.value)}
+        >
+          <MenuItem value='gpt-3.5-turbo'>GPT-3.5 Turbo</MenuItem>
+          <MenuItem value='gpt-4o'>GPT-4o</MenuItem>
+          <MenuItem value='gpt-4'>GPT-4</MenuItem>
+        </Select>
+      </FormControl>
       <form
         onSubmit={handleSubmit}
         style={{ display: 'flex', marginBottom: '16px' }}
@@ -74,21 +88,9 @@ const AIChatApi: React.FC = () => {
           disabled={isLoading}
         />
         <Button type='submit' variant='contained' disabled={isLoading}>
-          {isLoading ? 'Sending...' : 'Send'}
+          {isLoading ? 'Analyzing...' : 'Analyze'}
         </Button>
       </form>
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel id='model-select-label'>Model</InputLabel>
-        <Select
-          labelId='model-select-label'
-          value={model}
-          label='Model'
-          onChange={(e) => setModel(e.target.value)}
-        >
-          <MenuItem value='gpt-3.5-turbo'>GPT-3.5 Turbo</MenuItem>
-          <MenuItem value='gpt-4'>GPT-4</MenuItem>
-        </Select>
-      </FormControl>
       <AIChat messages={messages} />
     </Box>
   );

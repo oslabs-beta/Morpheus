@@ -153,10 +153,8 @@ const DashboardAichat = () => {
       maxVelocity: 50,
       minVelocity: 0.1,
       timestep: 0.5,
-      adaptiveTimestep: true,
     },
   };
-
   const events = {
     select: function (event) {
       var { nodes, edges } = event;
@@ -174,11 +172,11 @@ const DashboardAichat = () => {
           <Box sx={{ padding: 2 }}>
             <Typography
               variant='h3'
-              fontFamily={'Open Sans, sans-serif'}
+              fontFamily={'avenir'}
               gutterBottom
               sx={{ mt: 5, mb: 5 }}
             >
-              AI Analysis
+              Kubernetes Cluster View
             </Typography>
             <AIChatApi />
           </Box>

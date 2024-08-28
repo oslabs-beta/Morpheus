@@ -7,7 +7,7 @@ import podImage from '../../public/pod-128.png';
 import serviceImage from '../../public/svc-128.png';
 import deploymentImage from '../../public/deploy-128.png';
 import './clusterView.css';
-import AIChat from './AIChat';
+import AIChat from './aichat';
 import { Box, Grid } from '@mui/material';
 
 const Dashboard2 = () => {
