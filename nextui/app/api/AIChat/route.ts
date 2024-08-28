@@ -6,16 +6,30 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// // Function to fetch Kubernetes data
+// async function fetchKubernetesData() {
+//   // TODO: implement this function to fetch Kubernetes-specific data
+//   // This is placeholder and should be replaced with actual Kubernetes data fetching logic
+//   return {
+//     pods: 10,
+//     services: 5,
+//     deployments: 3,
+//     // Add more relevant Kubernetes metrics here
+//   };
+// }
+
 // Function to fetch Kubernetes data
 async function fetchKubernetesData() {
-  // TODO: implement this function to fetch Kubernetes-specific data
-  // This is placeholder and should be replaced with actual Kubernetes data fetching logic
-  return {
-    pods: 10,
-    services: 5,
-    deployments: 3,
-    // Add more relevant Kubernetes metrics here
-  };
+  try {
+    const response = await fetch('http://localhost:3000/api/v1/clusterview');
+    if (!response.ok) {
+      throw new Error('Failed to fetch cluster data');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching cluster data:', error);
+    return null;
+  }
 }
 
 export async function POST(request: Request) {
@@ -30,6 +44,13 @@ export async function POST(request: Request) {
 
     // Fetch Kubernetes metrics data
     const kubernetesData = await fetchKubernetesData();
+
+    if (!kubernetesData) {
+      return NextResponse.json(
+        { error: 'Failed to fetch Kubernetes data' },
+        { status: 500 }
+      );
+    }
 
     // Combine the user's prompt with the Kubernetes data
     const enhancedPrompt = `

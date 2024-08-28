@@ -10,6 +10,10 @@ import './clusterView.css';
 import AIChatApi from './aichat-api';
 import { Box, Grid, Typography } from '@mui/material';
 
+// This layout splits the page into two columns, right for the K8 view, left for the ai chat.
+// This imports the ai chat, and since the available space was smaller, the cluster would more easily disappear.
+// Some graphOptions settings were changed to make it more 'anchored'. 'forceAtlas2Based' was most anchoring.
+
 const DashboardAichat = () => {
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
   const [loading, setLoading] = useState(true);
@@ -140,19 +144,19 @@ const DashboardAichat = () => {
       enabled: true,
       stabilization: {
         enabled: true,
-        iterations: 1000,
+        iterations: 100, // settles the graph
         fit: true,
       },
-      solver: 'forceAtlas2Based',
+      solver: 'forceAtlas2Based', // most important for 'anchoring'
       forceAtlas2Based: {
-        gravitationalConstant: -50,
-        centralGravity: 0.01,
+        gravitationalConstant: -50, //prevents crowding
+        centralGravity: 0.01, //reduces pull
         springLength: 100,
         springConstant: 0.08,
       },
       maxVelocity: 50,
       minVelocity: 0.1,
-      timestep: 0.5,
+      timestep: 0.5, //speed to settle
     },
   };
   const events = {
