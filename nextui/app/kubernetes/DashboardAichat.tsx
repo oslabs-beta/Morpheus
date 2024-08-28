@@ -7,8 +7,14 @@ import podImage from '../../public/pod-128.png';
 import serviceImage from '../../public/svc-128.png';
 import deploymentImage from '../../public/deploy-128.png';
 import './clusterView.css';
+import AIChatApi from './aichat-api';
+import { Box, Grid, Typography } from '@mui/material';
 
-const Dashboard = () => {
+// This layout splits the page into two columns, right for the K8 view, left for the ai chat.
+// This imports the ai chat, and since the available space was smaller, the cluster would more easily disappear.
+// Some graphOptions settings were changed to make it more 'anchored'. 'forceAtlas2Based' was most anchoring.
+
+const DashboardAichat = () => {
   const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
   const [loading, setLoading] = useState(true);
   const [clusterData, setclusterData] = useState({});
@@ -19,7 +25,6 @@ const Dashboard = () => {
       .then((data) => {
         const { nodes, edges } = processClusterData(data);
         setclusterData(data);
-
         setGraphData({ nodes, edges });
         setLoading(false);
       })
@@ -37,8 +42,8 @@ const Dashboard = () => {
     clusterData.nodes.forEach((node, index) => {
       nodes.push({
         id: `node-${index}`,
-        label: `${node}`, // label would be the same thing
-        title: `Node: ${node}`, // label would be the same thing
+        label: `${node}`,
+        title: `Node: ${node}`,
         shape: 'image',
         image: nodeImage.src,
         size: 40,
@@ -57,7 +62,6 @@ const Dashboard = () => {
 
       // Create edges from Node to Pod
       const nodeIndex = clusterData.nodes.indexOf(pod.nodeName);
-      console.log(nodeIndex);
       if (nodeIndex !== -1) {
         edges.push({
           from: `node-${nodeIndex}`,
@@ -106,7 +110,7 @@ const Dashboard = () => {
         image: deploymentImage.src,
       });
 
-      // Create edges from Deployment to Pod (based on naming convention or //label matching)
+      // Create edges from Deployment to Pod (based on naming convention or label matching)
       clusterData.pods.forEach((pod, podIndex) => {
         if (pod.name.includes(deployment)) {
           edges.push({
@@ -123,19 +127,38 @@ const Dashboard = () => {
 
   const graphOptions = {
     layout: {
-      hierarchical: false, // try switching to true
+      hierarchical: false,
     },
     edges: {
       color: '#000000',
     },
-    height: '1400px',
-    width: '2400px',
+    height: '100%',
+    width: '100%',
     interaction: {
       hover: true,
-      // tooltipDelay: 250,
+      dragNodes: true,
+      dragView: true,
+      zoomView: true,
+    },
+    physics: {
+      enabled: true,
+      stabilization: {
+        enabled: true,
+        iterations: 100, // settles the graph
+        fit: true,
+      },
+      solver: 'forceAtlas2Based', // most important for 'anchoring'
+      forceAtlas2Based: {
+        gravitationalConstant: -50, //prevents crowding
+        centralGravity: 0.01, //reduces pull
+        springLength: 100,
+        springConstant: 0.08,
+      },
+      maxVelocity: 50,
+      minVelocity: 0.1,
+      timestep: 0.5, //speed to settle
     },
   };
-
   const events = {
     select: function (event) {
       var { nodes, edges } = event;
@@ -145,11 +168,39 @@ const Dashboard = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
+
   return (
-    <div>
-      <Graph graph={graphData} options={graphOptions} events={events} />
-    </div>
+    <Box sx={{ flexGrow: 1, height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
+      <Grid container spacing={2} sx={{ height: '100%' }}>
+        <Grid item xs={12} md={4} sx={{ height: '100%', overflowY: 'auto' }}>
+          <Box sx={{ padding: 2 }}>
+            <Typography
+              variant='h3'
+              fontFamily={'avenir'}
+              gutterBottom
+              sx={{ mt: 5, mb: 5 }}
+            >
+              Kubernetes Cluster View
+            </Typography>
+            <AIChatApi />
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={8} sx={{ height: '100%', overflow: 'hidden' }}>
+          <Box
+            sx={{
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              p: 2,
+              height: '100%',
+              overflow: 'auto',
+            }}
+          >
+            <Graph graph={graphData} options={graphOptions} events={events} />
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 
-export default Dashboard;
+export default DashboardAichat;

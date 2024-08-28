@@ -1,6 +1,12 @@
 import React from 'react';
-
-import { Container, List, ListItem, ListItemText, Button, Stack } from '@mui/material';
+import {
+  Container,
+  List,
+  ListItem,
+  ListItemText,
+  Button,
+  Stack,
+} from '@mui/material';
 import ContainerActions from './ContainerActions';
 
 async function getContainers() {
@@ -14,13 +20,19 @@ export default async function ContainersPage() {
   const containers = await getContainers();
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth='md'>
       <h1>Docker Containers</h1>
       <List>
         {containers.map((container) => (
           <ListItem key={container.Id} divider>
-            <ListItemText primary={container.Names[0].slice(1)} />
-            <ContainerActions containerId={container.Id} state={container.State} />
+            <ListItemText
+              primaryTypographyProps={{ style: { color: 'black' } }}
+              primary={container.Names[0].slice(1)}
+            />
+            <ContainerActions
+              containerId={container.Id}
+              state={container.State}
+            />
           </ListItem>
         ))}
       </List>
