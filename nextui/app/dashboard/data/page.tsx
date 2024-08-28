@@ -1,12 +1,14 @@
 'use client';
 
-import { CssBaseline } from '@mui/material';
+import React from 'react';
+import { Container, CssBaseline, Box } from '@mui/material';
+import Sidebar from '../../components/sideBar/sideBar';
+import styles from './data.module.scss';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import styles from './data.module.scss';
 
 type ApiResponse = {
-  data: string; // Adjust this based on your actual JSON structure
+  data: string;
 };
 
 export default function DashboardData() {
@@ -16,16 +18,15 @@ export default function DashboardData() {
   const [fadeState, setFadeState] = useState<'fade-in' | 'fade-out'>('fade-in');
   const [textBoxFadeState, setTextBoxFadeState] = useState<
     'fade-in' | 'fade-out'
-  >('fade-out'); // Initially fade-out
+  >('fade-out');
   const [isLoading, setIsLoading] = useState(false);
 
   const onClickHandle = async () => {
-    // Start fading out the button
     setFadeState('fade-out');
     setIsLoading(true);
     setTimeout(() => {
-      setIsButtonVisible(false); // Remove the button after fading out
-    }, 1000); // 1s for button fade-out
+      setIsButtonVisible(false);
+    }, 1000);
 
     try {
       const response = await axios.get(
@@ -33,20 +34,19 @@ export default function DashboardData() {
       );
       setData(response.data);
       setIsLoading(false);
-      setTextBoxFadeState('fade-in'); // Start fading in the text box
+      setTextBoxFadeState('fade-in');
     } catch (error) {
       console.error('Error fetching data: ', error);
       setIsLoading(false);
       setIsButtonVisible(true);
-      setTextBoxFadeState('fade-out'); // Reset the text box if error occurs
+      setTextBoxFadeState('fade-out');
     }
   };
 
   useEffect(() => {
     if (data) {
-      const typingDelay = 2500; // Delay to match fade-in duration (2 seconds)
-      setTypedData(''); // Reset the typed data
-
+      const typingDelay = 2500;
+      setTypedData('');
       setTimeout(() => {
         let currentIndex = 0;
         const intervalId = setInterval(() => {
@@ -58,37 +58,44 @@ export default function DashboardData() {
             }
             return newTypedData;
           });
-        }, 12); // Adjust the speed of typing here
+        }, 12);
       }, typingDelay);
     }
   }, [data]);
 
   return (
-    <div className={styles.container}>
-      <CssBaseline />
-      <div className={styles['button-wrapper']}>
-        {isButtonVisible && (
-          <button
-            className={`${styles['aws-btn']} ${styles[fadeState]}`}
-            onClick={onClickHandle}
+    <Box sx={{ display: 'flex' }}>
+      <Sidebar />
+      <Container component='main' maxWidth='lg' sx={{ flexGrow: 1, p: 3 }}>
+        <CssBaseline />
+        <div className={styles.container}>
+          <div className={styles['button-wrapper']}>
+            {isButtonVisible && (
+              <button
+                className={`${styles['aws-btn']} ${styles[fadeState]}`}
+                onClick={onClickHandle}
+              >
+                <img
+                  src='/aws-bedrock-logo.png'
+                  alt='AWS Bedrock Logo'
+                  className={styles['logo']}
+                />
+                <span>Analyze Data</span>
+              </button>
+            )}
+            {isLoading && (
+              <div
+                className={`${styles['loading-spinner']} ${styles['fade-in']}`}
+              ></div>
+            )}
+          </div>
+          <p
+            className={`${styles['data-display']} ${styles[textBoxFadeState]}`}
           >
-            <img
-              src='/aws-bedrock-logo.png'
-              alt='AWS Bedrock Logo'
-              className={styles['logo']}
-            />
-            <span>Analyze Data</span>
-          </button>
-        )}
-        {isLoading && (
-          <div
-            className={`${styles['loading-spinner']} ${styles['fade-in']}`}
-          ></div>
-        )}
-      </div>
-      <p className={`${styles['data-display']} ${styles[textBoxFadeState]}`}>
-        {typedData}
-      </p>
-    </div>
+            {typedData}
+          </p>
+        </div>
+      </Container>
+    </Box>
   );
 }
