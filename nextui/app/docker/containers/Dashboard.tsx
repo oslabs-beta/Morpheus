@@ -3,9 +3,7 @@ import React from 'react';
 const Dashboard = () => {
   return (
     <div className='max-w-7xl mx-auto p-8 bg-gray-900 rounded-xl shadow-xl'>
-      <header className='flex justify-between items-center bg-blue-600 p-4 rounded-lg mb-8'>
-
-      </header>
+      <header className='flex justify-between items-center bg-blue-600 p-4 rounded-lg mb-8'></header>
 
       <h2 className='text-5xl font-bold text-center text-white mb-12'>
         Docker Dashboard 📊
@@ -56,8 +54,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <footer className='text-center text-gray-500 mt-12'>
-      </footer>
+      <footer className='text-center text-gray-500 mt-12'></footer>
     </div>
   );
 };
