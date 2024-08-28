@@ -1,8 +1,8 @@
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import { CssBaseline } from '@mui/material';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
 import styles from './data.module.scss';
 import ReactMarkdown from 'react-markdown';
 
@@ -19,6 +19,7 @@ export default function DashboardData() {
     'fade-in' | 'fade-out'
   >('fade-out'); // Initially fade-out
   const [isLoading, setIsLoading] = useState(false);
+  const [floatingElements, setFloatingElements] = useState([]);
 
   const onClickHandle = async () => {
     // Start fading out the button
@@ -63,13 +64,51 @@ export default function DashboardData() {
     }
   }, [data]);
 
+  useEffect(() => {
+    const createFloatingElements = () => {
+      const elements = [];
+      for (let i = 0; i < 5; i++) {
+        elements.push({
+          size: Math.random() * 100 + 50,
+          left: Math.random() * 100 + '%',
+          top: Math.random() * 100 + '%',
+          animationDuration: Math.random() * 10 + 5 + 's',
+        });
+      }
+      return elements;
+    };
+
+    setFloatingElements(createFloatingElements());
+  }, []);
+
   // useEffect(() => {
   //   setTypedData(data); // Test with a full block of text
   // }, [data]);
 
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+      }}
+    >
       <CssBaseline />
+      {floatingElements.map((element, index) => (
+        <div
+          key={index}
+          className={styles['floating-element']}
+          style={{
+            width: element.size,
+            height: element.size,
+            left: element.left,
+            top: element.top,
+            animation: `${styles.float} ${element.animationDuration} ease-in-out infinite`,
+          }}
+        />
+      ))}
       <div className={styles['button-wrapper']}>
         {isButtonVisible && (
           <button

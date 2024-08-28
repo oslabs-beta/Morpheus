@@ -1,5 +1,5 @@
 .container {
-  padding: 20px;
+  padding: 0; // Remove padding
 }
 
 .dataCard {
@@ -12,7 +12,7 @@
   background-color: white;
 }
 
-.dataCard>* {
+.dataCard > * {
   position: absolute;
   top: 50%;
   left: 50%;

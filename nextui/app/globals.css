@@ -1,4 +1,4 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -18,7 +18,11 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: while(to bottom, transparent, rgb(var(--background-end-rgb)))
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
     rgb(var(--background-start-rgb));
 }
 
@@ -26,22 +30,21 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+} */
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-@keyframes gradient-animation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-.bg-animated {
-  background: linear-gradient(270deg, #ff7e5f, #227d8f, #86a8e7, #91eac8);
-  background-size: 400% 400%;
-  animation: gradient-animation 10s ease infinite;
+main {
+  flex: 1;
 }
