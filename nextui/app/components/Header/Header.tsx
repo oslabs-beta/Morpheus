@@ -27,6 +27,7 @@ import ContainerIcon from '@mui/icons-material/ViewInAr'; // Import for Docker i
 import { FaDocker, FaAws, FaBitcoin } from 'react-icons/fa';
 import { BiLogoKubernetes } from 'react-icons/bi';
 import { FaDatabase, FaGear } from 'react-icons/fa6';
+import Image from 'next/image';
 
 const drawerWidth = 240;
 
@@ -127,28 +128,24 @@ function Header() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar position='fixed' open={open}>
+      <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
-            color='inherit'
-            aria-label='open drawer'
+            color="inherit"
+            aria-label="open drawer"
             onClick={handleDrawerOpen}
-            edge='start'
+            edge="start"
             sx={{ mr: 2, ...(open && { display: 'none' }) }}
           >
-            <MenuIcon />
+            <Image
+              src="/sidebarIcon.png" // Replace with the actual path to your image
+              alt="Menu Icon"
+              width={40} // Adjust the size as needed
+              height={40} // Adjust the size as needed
+            />
           </IconButton>
-          <Link
-            href='/'
-            passHref
-            style={{ textDecoration: 'none', color: 'inherit' }}
-          >
-            <Typography
-              variant='h6'
-              noWrap
-              component='div'
-              sx={{ cursor: 'pointer' }}
-            >
+          <Link href="/" passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Typography variant="h6" noWrap component="div" sx={{ cursor: 'pointer' }}>
               Morpheus
             </Typography>
           </Link>
@@ -163,17 +160,13 @@ function Header() {
             boxSizing: 'border-box',
           },
         }}
-        variant='persistent'
-        anchor='left'
+        variant="persistent"
+        anchor="left"
         open={open}
       >
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
-            )}
+            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider />
@@ -183,18 +176,13 @@ function Header() {
             <ListItemIcon>
               <FaDocker />
             </ListItemIcon>
-            <ListItemText primary='Docker' />
+            <ListItemText primary="Docker" />
             {DockerFolderOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          <Collapse in={DockerFolderOpen} timeout='auto' unmountOnExit>
-            <List component='div' disablePadding>
+          <Collapse in={DockerFolderOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
               {dockerPages.map((page) => (
-                <Link
-                  key={page.name}
-                  href={page.path}
-                  passHref
-                  style={{ textDecoration: 'none', color: 'inherit' }}
-                >
+                <Link key={page.name} href={page.path} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>{page.icon}</ListItemIcon>
                     <ListItemText primary={page.name} />
@@ -209,18 +197,13 @@ function Header() {
             <ListItemIcon>
               <BiLogoKubernetes />
             </ListItemIcon>
-            <ListItemText primary='Kubernetes' />
+            <ListItemText primary="Kubernetes" />
             {kubernetesOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          <Collapse in={kubernetesOpen} timeout='auto' unmountOnExit>
-            <List component='div' disablePadding>
+          <Collapse in={kubernetesOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
               {kubernetesPages.map((page) => (
-                <Link
-                  key={page.name}
-                  href={page.path}
-                  passHref
-                  style={{ textDecoration: 'none', color: 'inherit' }}
-                >
+                <Link key={page.name} href={page.path} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
                   <ListItemButton sx={{ pl: 4 }}>
                     <ListItemIcon>{page.icon}</ListItemIcon>
                     <ListItemText primary={page.name} />
@@ -232,12 +215,7 @@ function Header() {
 
           {/* Other pages */}
           {pages.map((page) => (
-            <Link
-              key={page.name}
-              href={page.path}
-              passHref
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
+            <Link key={page.name} href={page.path} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem disablePadding>
                 <ListItemButton>
                   <ListItemIcon>{page.icon}</ListItemIcon>
