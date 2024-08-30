@@ -5,6 +5,7 @@ import { CssBaseline } from '@mui/material';
 import axios from 'axios';
 import styles from './data.module.scss';
 import ReactMarkdown from 'react-markdown';
+import Image from 'next/image';
 
 type ApiResponse = {
   data: string; // Adjust this based on your actual JSON structure
@@ -15,9 +16,7 @@ export default function DashboardData() {
   const [isButtonVisible, setIsButtonVisible] = useState(true);
   const [typedData, setTypedData] = useState('');
   const [fadeState, setFadeState] = useState<'fade-in' | 'fade-out'>('fade-in');
-  const [textBoxFadeState, setTextBoxFadeState] = useState<
-    'fade-in' | 'fade-out'
-  >('fade-out'); // Initially fade-out
+  const [textBoxFadeState, setTextBoxFadeState] = useState<'fade-in' | 'fade-out'>('fade-out'); // Initially fade-out
   const [isLoading, setIsLoading] = useState(false);
   const [floatingElements, setFloatingElements] = useState([]);
 
@@ -111,23 +110,12 @@ export default function DashboardData() {
       ))}
       <div className={styles['button-wrapper']}>
         {isButtonVisible && (
-          <button
-            className={`${styles['aws-btn']} ${styles[fadeState]}`}
-            onClick={onClickHandle}
-          >
-            <img
-              src='/aws-bedrock-logo.png'
-              alt='AWS Bedrock Logo'
-              className={styles['logo']}
-            />
+          <button className={`${styles['aws-btn']} ${styles[fadeState]}`} onClick={onClickHandle}>
+            <Image src="/aws-bedrock-logo.png" alt="AWS Bedrock Logo" className={styles['logo']} />
             <span>Analyze Data</span>
           </button>
         )}
-        {isLoading && (
-          <div
-            className={`${styles['loading-spinner']} ${styles['fade-in']}`}
-          ></div>
-        )}
+        {isLoading && <div className={`${styles['loading-spinner']} ${styles['fade-in']}`}></div>}
       </div>
       <div className={`${styles['data-display']} ${styles[textBoxFadeState]}`}>
         <ReactMarkdown>{typedData}</ReactMarkdown>
