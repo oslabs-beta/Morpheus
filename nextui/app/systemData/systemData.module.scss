@@ -1,5 +1,14 @@
+.pageBackground {
+  background-color: #DADFDF;
+  color: #ffffff;
+  min-height: 100vh;
+  margin: 0; // Ensure no margin
+  padding: 0; // Ensure no padding
+}
+
 .topCardsContainer {
-  margin-top: 10px;
+  // margin-top: 10px;
+  margin-bottom: 20px; // Add some bottom margin to the container
 }
 
 .dataCard {
@@ -7,23 +16,20 @@
   position: relative;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  background-color: white;
+  background-color: #DADFDF;;
 }
 
 .dataCardGrid1, .dataCardGrid2, .thirdGridItems {
   padding: 0;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  background-color: white;
-  overflow: hidden; //fixes the curved edges overflowing = dont remove, breaks the dark background charts only
+  background-color: #DADFDF;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
 }
-// cannot fix spacing between grid2 and grid1 the 10 pixel gap is going to stay i guess 
-.dataCardGrid1 iframe,
-.dataCardGrid2 iframe,
-.thirdGridItems iframe {
+
+.dataCardGrid1 iframe, .dataCardGrid2 iframe, .thirdGridItems iframe {
   width: 100%;
   height: 100%;
   border: none;
@@ -32,19 +38,22 @@
 
 .dataCardGrid1 {
   height: 120%;
+  margin-bottom: 20px; // Add bottom margin to create space
 }
 
 .dataCardGrid2 {
   height: 100%;
+  margin-top: 20px; // Add top margin to create space
+  margin-bottom: 20px; // Add bottom margin for consistency
 }
 
 .thirdGridItems {
+  margin-top: 20px;
+  margin-bottom: -10px;
   height: 400px;
 }
 
-.cardHeaderCPU,
-.cardHeaderMemory,
-.cardHeaderNetwork {
+.cardHeaderCPU, .cardHeaderMemory, .cardHeaderNetwork {
   color: white;
   font-size: 1.125rem;
   font-weight: 600;

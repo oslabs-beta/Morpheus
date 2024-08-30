@@ -30,7 +30,7 @@ const Dashboard: React.FC = () => {
     return `http://localhost:50003/d-solo/4dMaCsRZz/docker-container?orgId=1&refresh=5s&panelId=${panelId}`;
   };
   return (
-    <>
+    <Box className={styles.pageBackground}>
       <CssBaseline />
       <Box>
         <Grid container spacing={2} className={styles.topCardsContainer}>
@@ -108,7 +108,7 @@ const Dashboard: React.FC = () => {
           </Grid>
         </Grid>
       </Box>
-    </>
+    </Box>
   );
 };
 
