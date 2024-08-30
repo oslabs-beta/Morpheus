@@ -35,6 +35,18 @@ const queries = [
   },
 ];
 
+interface PrometheusMetric {
+  metric: {
+    [key: string]: string;
+  };
+  value: [number, string];
+}
+
+interface QueryResult {
+  name: string;
+  data: PrometheusMetric[];
+}
+
 export default async function getMetrics() {
   if (!(await limiter.removeTokens(1))) {
     throw new Error('Rate limit exceeded');
@@ -45,7 +57,7 @@ export default async function getMetrics() {
   }
 
   try {
-    const results = await Promise.all(
+    const results: QueryResult[] = await Promise.all(
       queries.map(async ({ name, query }) => {
         const url = `${PROMETHEUS_URL}/api/v1/query?query=${encodeURIComponent(
           query
@@ -65,7 +77,7 @@ export default async function getMetrics() {
         metric: name,
         unit: queryInfo?.unit,
         description: queryInfo?.description,
-        data: data.map((item) => ({
+        data: data.map((item: PrometheusMetric) => ({
           container: item.metric.name,
           value: parseFloat(item.value[1]).toFixed(2),
         })),
