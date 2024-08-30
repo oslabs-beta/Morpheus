@@ -41,6 +41,7 @@
     "@types/react": "18.3.4",
     "@types/react-dom": "^18",
     "@types/react-modal": "^3.16.3",
+    "@types/vis": "^4.21.27",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "nextjs-node-loader": "^1.1.5",
