@@ -2,16 +2,17 @@ import { NextResponse } from 'next/server';
 import {
   BedrockRuntimeClient,
   InvokeModelCommand,
+  BedrockRuntimeClientConfig,
 } from '@aws-sdk/client-bedrock-runtime';
 import getMetrics from './getMetrics';
 
 const client = new BedrockRuntimeClient({
   region: 'us-east-1',
   credentials: {
-    secretAccessKey: process.env.SECRET_ACCESS_KEY,
-    accessKeyId: process.env.ACCESS_KEY_ID,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY ?? undefined,
+    accessKeyId: process.env.ACCESS_KEY_ID ?? undefined,
   },
-});
+} as BedrockRuntimeClientConfig);
 
 export async function GET(req: Request) {
   try {
@@ -83,8 +84,14 @@ export async function GET(req: Request) {
     // }
   } catch (error) {
     console.error('Error:', error);
+
+    let errorMessage = 'Something went wrong';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+
     return NextResponse.json(
-      { error: 'Something went wrong', details: error.message },
+      { error: 'Something went wrong', details: errorMessage },
       { status: 500 }
     );
   }

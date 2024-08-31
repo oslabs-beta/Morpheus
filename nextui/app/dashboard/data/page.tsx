@@ -11,6 +11,13 @@ type ApiResponse = {
   data: string; // Adjust this based on your actual JSON structure
 };
 
+interface FloatingElement {
+  size: number;
+  left: string;
+  top: string;
+  animationDuration: string;
+}
+
 export default function DashboardData() {
   const [data, setData] = useState<string | undefined>();
   const [isButtonVisible, setIsButtonVisible] = useState(true);
@@ -18,7 +25,9 @@ export default function DashboardData() {
   const [fadeState, setFadeState] = useState<'fade-in' | 'fade-out'>('fade-in');
   const [textBoxFadeState, setTextBoxFadeState] = useState<'fade-in' | 'fade-out'>('fade-out'); // Initially fade-out
   const [isLoading, setIsLoading] = useState(false);
-  const [floatingElements, setFloatingElements] = useState([]);
+  const [floatingElements, setFloatingElements] = useState<FloatingElement[]>(
+    []
+  );
 
   const onClickHandle = async () => {
     // Start fading out the button
@@ -64,8 +73,8 @@ export default function DashboardData() {
   }, [data]);
 
   useEffect(() => {
-    const createFloatingElements = () => {
-      const elements = [];
+    const createFloatingElements = (): FloatingElement[] => {
+      const elements: FloatingElement[] = [];
       for (let i = 0; i < 5; i++) {
         elements.push({
           size: Math.random() * 100 + 50,
