@@ -9,22 +9,49 @@ import deploymentImage from '../../public/deploy-128.png';
 import './clusterView.css';
 import AIChatApi from './aichat-api';
 import { Box, Grid, Typography } from '@mui/material';
+import { StaticImageData } from 'next/image';
 
-// This layout splits the page into two columns, right for the K8 view, left for the ai chat.
-// This imports the ai chat, and since the available space was smaller, the cluster would more easily disappear.
-// Some graphOptions settings were changed to make it more 'anchored'. 'forceAtlas2Based' was most anchoring.
+// Add type definitions for cluster data and graph data
+interface ClusterData {
+  nodes: string[];
+  pods: { name: string; nodeName: string }[];
+  services: string[];
+  serviceToPods: { [key: string]: string[] };
+  deployments: string[];
+}
+
+interface GraphNode {
+  id: string;
+  label: string;
+  title: string;
+  shape: string;
+  image: string;
+  size?: number;
+}
+
+interface GraphEdge {
+  from: string;
+  to: string;
+  length: number;
+  arrows: string;
+}
+
+interface GraphData {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+}
 
 const DashboardAichat = () => {
-  const [graphData, setGraphData] = useState({ nodes: [], edges: [] });
+  const [graphData, setGraphData] = useState<GraphData>({ nodes: [], edges: [] });
   const [loading, setLoading] = useState(true);
-  const [clusterData, setclusterData] = useState({});
+  const [clusterData, setClusterData] = useState<ClusterData | null>(null);
 
   useEffect(() => {
     fetch('/api/v1/clusterview')
       .then((response) => response.json())
       .then((data) => {
         const { nodes, edges } = processClusterData(data);
-        setclusterData(data);
+        setClusterData(data);
         setGraphData({ nodes, edges });
         setLoading(false);
       })
@@ -34,9 +61,9 @@ const DashboardAichat = () => {
       });
   }, []);
 
-  const processClusterData = (clusterData) => {
-    const nodes = [];
-    const edges = [];
+  const processClusterData = (clusterData: ClusterData): GraphData => {
+    const nodes: GraphNode[] = [];
+    const edges: GraphEdge[] = [];
 
     // Create nodes for each Kubernetes Node
     clusterData.nodes.forEach((node, index) => {
@@ -85,9 +112,7 @@ const DashboardAichat = () => {
       if (clusterData.serviceToPods[service]) {
         // Create edges from Service to Pod
         clusterData.serviceToPods[service].forEach((podName) => {
-          const podIndex = clusterData.pods.findIndex(
-            (pod) => pod.name === podName
-          );
+          const podIndex = clusterData.pods.findIndex((pod) => pod.name === podName);
           if (podIndex !== -1) {
             edges.push({
               from: `service-${index}`,
@@ -160,7 +185,7 @@ const DashboardAichat = () => {
     },
   };
   const events = {
-    select: function (event) {
+    select: function (event: { nodes: string[]; edges: string[] }) {
       var { nodes, edges } = event;
     },
   };
@@ -174,12 +199,7 @@ const DashboardAichat = () => {
       <Grid container spacing={2} sx={{ height: '100%' }}>
         <Grid item xs={12} md={4} sx={{ height: '100%', overflowY: 'auto' }}>
           <Box sx={{ padding: 2 }}>
-            <Typography
-              variant='h3'
-              fontFamily={'avenir'}
-              gutterBottom
-              sx={{ mt: 5, mb: 5 }}
-            >
+            <Typography variant="h3" fontFamily={'avenir'} gutterBottom sx={{ mt: 5, mb: 5 }}>
               Kubernetes Cluster View
             </Typography>
             <AIChatApi />
