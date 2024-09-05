@@ -4,8 +4,9 @@ import {
   List,
   ListItem,
   ListItemText,
-  Button,
-  Stack,
+  Typography,
+  Paper,
+  Box,
 } from '@mui/material';
 import ContainerActions from './ContainerActions';
 
@@ -20,22 +21,44 @@ export default async function ContainersPage() {
   const containers = await getContainers();
 
   return (
-    <Container maxWidth='md'>
-      <h1>Docker Containers</h1>
-      <List>
-        {containers.map((container) => (
-          <ListItem key={container.Id} divider>
-            <ListItemText
-              primaryTypographyProps={{ style: { color: 'black' } }}
-              primary={container.Names[0].slice(1)}
-            />
-            <ContainerActions
-              containerId={container.Id}
-              state={container.State}
-            />
-          </ListItem>
-        ))}
-      </List>
-    </Container>
+    <Box sx={{ 
+      backgroundColor: '#D8DCDD', 
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+    }}>
+      <Container maxWidth='md' sx={{ py: 2, flexGrow: 1 }}>
+        <Typography variant="h5" component="h1" gutterBottom sx={{ mb: 2 }}>
+          Docker Containers
+        </Typography>
+        <Paper elevation={3}>
+          <List disablePadding>
+            {containers.map((container) => (
+              <ListItem
+                key={container.Id}
+                divider
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  py: 1,
+                }}
+              >
+                <ListItemText
+                  primary={container.Names[0].slice(1)}
+                  secondary={`ID: ${container.Id.slice(0, 12)}`}
+                  primaryTypographyProps={{ variant: 'body1' }}
+                  secondaryTypographyProps={{ variant: 'caption' }}
+                />
+                <ContainerActions
+                  containerId={container.Id}
+                  state={container.State}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Paper>
+      </Container>
+    </Box>
   );
 }
