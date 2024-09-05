@@ -1,18 +1,11 @@
-import os
 import requests
 import psycopg2
 import time
 from datetime import datetime
 
-# Use environment variables for connection details
-PROMETHEUS_URL = os.environ.get('PROMETHEUS_URL', 'http://prometheus:9090')
-POSTGRES_HOST = os.environ.get('POSTGRES_HOST', 'postgres')
-POSTGRES_PORT = os.environ.get('POSTGRES_PORT', '5432')
-POSTGRES_DB = os.environ.get('POSTGRES_DB', 'morpheus')
-POSTGRES_USER = os.environ.get('POSTGRES_USER', 'admin')
-POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', 'admin')
-
-POSTGRES_CONN = f"dbname={POSTGRES_DB} user={POSTGRES_USER} password={POSTGRES_PASSWORD} host={POSTGRES_HOST} port={POSTGRES_PORT}"
+# Prometheus and PostgreSQL connection details
+PROMETHEUS_URL = "http://localhost:50002"  # Based on the PROMETHEUS_URL in the codebase
+POSTGRES_CONN = "dbname=morpheus user=admin password=admin host=localhost port=50005"  # Based on the postgres configuration in docker-compose-morpheus.yaml
 
 # SQL query to insert metrics
 INSERT_METRIC_QUERY = """
