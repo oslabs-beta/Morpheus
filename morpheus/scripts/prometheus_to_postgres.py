@@ -28,7 +28,10 @@ def get_metrics():
         response = requests.get(f"{PROMETHEUS_URL}/api/v1/query", params={"query": query})
         data = response.json()
         if data['status'] == 'success' and data['data']['result']:
-            metrics[metric_name] = data['data']['result'][0]['value'][1]
+            value = float(data['data']['result'][0]['value'][1])
+            if metric_name == 'CPU_usage':
+                value *= 100  # Convert CPU usage to percentage
+            metrics[metric_name] = value
     
     return metrics
 
