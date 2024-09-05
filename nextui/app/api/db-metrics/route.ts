@@ -10,27 +10,29 @@ const pool = new Pool({
   password: process.env.POSTGRES_PASSWORD || 'admin',
 });
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const limit = searchParams.get('limit') || '50';
+
   try {
     const client = await pool.connect();
     try {
-      const result = await client.query('SELECT * FROM snapshots ORDER BY metric_date DESC LIMIT 1');
+      const result = await client.query('SELECT * FROM snapshots ORDER BY metric_date DESC LIMIT $1', [limit]);
       
       if (result.rows.length === 0) {
         return NextResponse.json({ message: 'No data found' }, { status: 404 });
       }
 
-      const latestSnapshot = result.rows[0];
-      
-      // Convert BigInt values to strings
-      const processedSnapshot = Object.fromEntries(
-        Object.entries(latestSnapshot).map(([key, value]) => [
-          key,
-          typeof value === 'bigint' ? value.toString() : value
-        ])
-      );
+      const snapshots = result.rows.map(row => {
+        return Object.fromEntries(
+          Object.entries(row).map(([key, value]) => [
+            key,
+            typeof value === 'bigint' ? value.toString() : value
+          ])
+        );
+      });
 
-      return NextResponse.json({ data: processedSnapshot });
+      return NextResponse.json({ data: snapshots });
     } finally {
       client.release();
     }

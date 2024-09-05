@@ -41,25 +41,33 @@ const isOutlier = (metricName: string, value: number): boolean => {
 };
 
 export function MetricsDisplay() {
-  const [metric, setMetric] = useState<Metric | null>(null);
+  const [metrics, setMetrics] = useState<Metric[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+    useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const response = await fetch('/api/db-metrics');
+        const response = await fetch('/api/db-metrics?limit=50'); // Fetch last 50 metrics
         if (!response.ok) {
           throw new Error('Failed to fetch metrics');
         }
-        const { data } = await response.json();
-        if (!data || typeof data !== 'object') {
+        const responseData = await response.json();
+        console.log('API Response:', responseData); // Log the entire response
+
+        let metricsData: Metric[];
+        if (Array.isArray(responseData.data)) {
+          metricsData = responseData.data;
+        } else if (typeof responseData.data === 'object' && responseData.data !== null) {
+          metricsData = [responseData.data];
+        } else {
           throw new Error('Invalid data format');
         }
-        setMetric(data);
+
+        setMetrics(metricsData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
-        console.error(err);
+        console.error('Error fetching metrics:', err);
       } finally {
         setLoading(false);
       }
@@ -89,20 +97,51 @@ export function MetricsDisplay() {
 
   if (loading) return <div className={styles.loading}>Loading...</div>;
   if (error) return <div className={styles.error}>Error: {error}</div>;
-  if (!metric) return <div className={styles.noData}>No metrics available</div>;
+  if (metrics.length === 0) return <div className={styles.noData}>No metrics available</div>;
 
-  return (
+    return (
     <div className={styles.container}>
       <h2 className={styles.title}>System Metrics Overview</h2>
-      <div className={styles.timestamp}>
-        Last updated: {new Date(metric.metric_date).toLocaleString()}
+      <div>
+        <div className={styles.timestamp}>
+          Last updated: {new Date(metrics[0].metric_date).toLocaleString()}
+        </div>
+ 
+        <div className={styles.grid}>
+          {renderMetricCard('CPU Usage', metrics[0].CPU_usage, 'CPU_usage')}
+          {renderMetricCard('Memory Usage', metrics[0].memory, 'memory')}
+          {renderMetricCard('Available Memory', metrics[0].available_memory, 'available_memory')}
+          {renderMetricCard('Disk Space Used', metrics[0].diskSpace || '0', 'diskSpace')}
+          {renderMetricCard('Swap Usage', metrics[0].swap, 'swap')}
+        </div>
       </div>
-      <div className={styles.grid}>
-        {renderMetricCard('CPU Usage', metric.CPU_usage, 'CPU_usage')}
-        {renderMetricCard('Memory Usage', metric.memory, 'memory')}
-        {renderMetricCard('Available Memory', metric.available_memory, 'available_memory')}
-        {renderMetricCard('Disk Space Used', metric.diskSpace || '0', 'diskSpace')}
-        {renderMetricCard('Swap Usage', metric.swap, 'swap')}
+
+      <h3 className={styles.subtitle}>Metrics History</h3>
+      <div className={styles.tableContainer}>
+        <table className={styles.metricsTable}>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>CPU Usage</th>
+              <th>Memory Usage</th>
+              <th>Available Memory</th>
+              <th>Disk Space Used</th>
+              <th>Swap Usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            {metrics.map((metric) => (
+              <tr key={metric.id}>
+                <td>{new Date(metric.metric_date).toLocaleString()}</td>
+                <td>{formatPercentage(metric.CPU_usage)}</td>
+                <td>{formatBytes(parseInt(metric.memory))}</td>
+                <td>{formatBytes(parseInt(metric.available_memory))}</td>
+                <td>{formatBytes(parseInt(metric.diskSpace || '0'))}</td>
+                <td>{formatBytes(parseInt(metric.swap))}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
