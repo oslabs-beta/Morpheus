@@ -194,9 +194,9 @@ function Header() {
               </IconButton>
             </Link>
             {/* Add a user avatar or profile button */}
-            <IconButton color="inherit" sx={{ ml: 2, border: '2px solid currentColor', borderRadius: '50%' }}>
+            {/* <IconButton color="inherit" sx={{ ml: 2, border: '2px solid currentColor', borderRadius: '50%' }}>
               <Typography variant="body2">JD</Typography>
-            </IconButton>
+            </IconButton> */}
           </Box>
         </Toolbar>
       </AppBar>
