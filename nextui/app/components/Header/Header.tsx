@@ -1,6 +1,8 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -17,7 +19,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Link from 'next/link';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import KubernetesIcon from '@mui/icons-material/Cloud';
 import ExpandLess from '@mui/icons-material/ExpandLess';
@@ -36,6 +37,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
 }>(({ theme, open }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
+  paddingTop: 0, // Remove top padding
   transition: theme.transitions.create('margin', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -105,10 +107,15 @@ const kubernetesPages = [
 ];
 
 function Header() {
+  const pathname = usePathname();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [DockerFolderOpen, setDockerFolderOpen] = React.useState(false);
   const [kubernetesOpen, setKubernetesOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    // Any client-side only logic can go here
+  }, [pathname]);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -128,43 +135,72 @@ function Header() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ mr: 2, ...(open && { display: 'none' }) }}
-          >
-            <Image
-              src="/sidebarIcon.png" // Replace with the actual path to your image
-              alt="Menu Icon"
-              width={40} // Adjust the size as needed
-              height={40} // Adjust the size as needed
-            />
-          </IconButton>
-          <Link href="/" passHref style={{ textDecoration: 'none', color: 'inherit' }}>
-            <Typography variant="h6" noWrap component="div" sx={{ cursor: 'pointer' }}>
-              Morpheus
-            </Typography>
-          </Link>
+      <AppBar position="fixed" open={open} sx={{ 
+        backgroundColor: 'transparent', 
+        boxShadow: 'none',
+        backdropFilter: 'blur(10px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+      }}>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{ 
+                mr: 2, 
+                ...(open && { display: 'none' }),
+                '&:hover': { transform: 'rotate(90deg)', transition: 'transform 0.3s' }
+              }}
+            >
+              <Image
+                src="/sidebarIcon.png"
+                alt="Menu Icon"
+                width={40} 
+                height={40} 
+              />
+            </IconButton>
+            <Link href="/" passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Typography variant="h6" noWrap component="div" sx={{ 
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                letterSpacing: 2,
+                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                '&:hover': { transform: 'scale(1.05)', transition: 'transform 0.3s' }
+              }}>
+                Morpheus
+              </Typography>
+            </Link>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {/* Add some header actions or user info here */}
+            <Link href="/dashboard/settings" passHref>
+              <IconButton 
+                color="inherit" 
+                sx={{ ml: 1 }}
+              >
+                <FaGear />
+              </IconButton>
+            </Link>
+            <Link href="/metrics" passHref>
+              <IconButton 
+                color="inherit" 
+                sx={{ ml: 1 }}
+              >
+                <FaDatabase />
+              </IconButton>
+            </Link>
+            {/* Add a user avatar or profile button */}
+            <IconButton color="inherit" sx={{ ml: 2, border: '2px solid currentColor', borderRadius: '50%' }}>
+              <Typography variant="body2">JD</Typography>
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
-      {open && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            // backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: (theme) => theme.zIndex.drawer - 1,
-          }}
-          onClick={handleDrawerClose}
-        />
-      )}
+
       <Drawer
         sx={{
           width: drawerWidth,
@@ -172,22 +208,38 @@ function Header() {
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
+            backgroundColor: 'rgba(18, 18, 18, 0.8)',
+            backdropFilter: 'blur(10px)',
+            color: 'common.white',
+            borderRight: '1px solid rgba(255, 255, 255, 0.1)'
           },
         }}
         variant="persistent"
         anchor="left"
         open={open}
       >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
+        <DrawerHeader sx={{ 
+          backgroundColor: 'transparent', 
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        }}>
+          <IconButton onClick={handleDrawerClose} sx={{ 
+            color: 'common.white',
+            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
+          }}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
         </DrawerHeader>
-        <Divider />
+        <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
         <List>
           {/* Docker folder */}
-          <ListItemButton onClick={handleDockerFolderClick}>
-            <ListItemIcon>
+          <ListItemButton 
+            onClick={handleDockerFolderClick} 
+            sx={{ 
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+              transition: 'background-color 0.3s'
+            }}
+          >
+            <ListItemIcon sx={{ color: 'common.white' }}>
               <FaDocker />
             </ListItemIcon>
             <ListItemText primary="Docker" />
@@ -197,8 +249,14 @@ function Header() {
             <List component="div" disablePadding>
               {dockerPages.map((page) => (
                 <Link key={page.name} href={page.path} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>{page.icon}</ListItemIcon>
+                  <ListItemButton 
+                    sx={{ 
+                      pl: 4, 
+                      '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+                      transition: 'background-color 0.3s'
+                    }}
+                  >
+                    <ListItemIcon sx={{ color: 'common.white' }}>{page.icon}</ListItemIcon>
                     <ListItemText primary={page.name} />
                   </ListItemButton>
                 </Link>
@@ -207,8 +265,14 @@ function Header() {
           </Collapse>
 
           {/* Kubernetes folder */}
-          <ListItemButton onClick={handleKubernetesFolderClick}>
-            <ListItemIcon>
+          <ListItemButton 
+            onClick={handleKubernetesFolderClick} 
+            sx={{ 
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+              transition: 'background-color 0.3s'
+            }}
+          >
+            <ListItemIcon sx={{ color: 'common.white' }}>
               <BiLogoKubernetes />
             </ListItemIcon>
             <ListItemText primary="Kubernetes" />
@@ -218,8 +282,14 @@ function Header() {
             <List component="div" disablePadding>
               {kubernetesPages.map((page) => (
                 <Link key={page.name} href={page.path} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <ListItemButton sx={{ pl: 4 }}>
-                    <ListItemIcon>{page.icon}</ListItemIcon>
+                  <ListItemButton 
+                    sx={{ 
+                      pl: 4, 
+                      '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+                      transition: 'background-color 0.3s'
+                    }}
+                  >
+                    <ListItemIcon sx={{ color: 'common.white' }}>{page.icon}</ListItemIcon>
                     <ListItemText primary={page.name} />
                   </ListItemButton>
                 </Link>
@@ -231,8 +301,13 @@ function Header() {
           {pages.map((page) => (
             <Link key={page.name} href={page.path} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>{page.icon}</ListItemIcon>
+                <ListItemButton 
+                  sx={{ 
+                    '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+                    transition: 'background-color 0.3s'
+                  }}
+                >
+                  <ListItemIcon sx={{ color: 'common.white' }}>{page.icon}</ListItemIcon>
                   <ListItemText primary={page.name} />
                 </ListItemButton>
               </ListItem>
@@ -240,6 +315,7 @@ function Header() {
           ))}
         </List>
       </Drawer>
+
       <Main open={open}>
         <DrawerHeader />
         {/* Your main content goes here */}

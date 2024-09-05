@@ -9,26 +9,32 @@ import {
   Toolbar,
   IconButton,
   Collapse,
+  ListItemButton,
+  ListItemIcon,
+  Typography,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
 import Link from 'next/link';
+import { FaDatabase, FaGear, FaDocker } from 'react-icons/fa';
+import { BiLogoKubernetes } from 'react-icons/bi';
+import Image from 'next/image';
 
 const pages = [
-  { name: 'Dashboard', path: '/dashboard' },
-  { name: 'Settings', path: '/dashboard/settings' },
+  { name: 'Dashboard', path: '/dashboard', icon: <FaDatabase /> },
+  { name: 'Settings', path: '/dashboard/settings', icon: <FaGear /> },
   {
     name: 'Data',
     path: '/dashboard/data',
+    icon: <FaDatabase />,
     children: [
-      { name: 'System Data', path: '/systemData' },
-      { name: 'Kubernetes', path: '/kubernetes' },
+      { name: 'System Data', path: '/systemData', icon: <FaDatabase /> },
+      { name: 'Kubernetes', path: '/kubernetes', icon: <BiLogoKubernetes /> },
     ],
   },
-  { name: 'Docker Management', path: '/docker/containers' },
+  { name: 'Docker Management', path: '/docker/containers', icon: <FaDocker /> },
 ];
 
 export default function Sidebar() {
@@ -51,37 +57,60 @@ export default function Sidebar() {
           aria-label='open drawer'
           onClick={handleDrawerToggle}
           edge='start'
-          style={{ color: 'white', marginLeft: '10px' }}
+          sx={{ 
+            mr: 2, 
+            color: 'white',
+            '&:hover': { transform: 'rotate(90deg)', transition: 'transform 0.3s' }
+          }}
         >
-          <MenuIcon fontSize='large' />
+          <Image
+            src="/sidebarIcon.png"
+            alt="Menu Icon"
+            width={40} 
+            height={40} 
+          />
         </IconButton>
       </Toolbar>
       <Drawer
         variant='persistent'
         open={open}
-        PaperProps={{
-          style: {
-            width: 250,
-            backgroundColor: '#1e1e1e',
-            color: '#e0e0e0',
-            paddingTop: '20px',
-            fontFamily: 'Roboto, sans-serif',
+        sx={{
+          width: 240,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: 240,
+            boxSizing: 'border-box',
+            backgroundColor: 'rgba(18, 18, 18, 0.8)',
+            backdropFilter: 'blur(10px)',
+            color: 'text.primary',
+            borderRight: '1px solid rgba(255, 255, 255, 0.1)'
           },
         }}
       >
         <div
           style={{
             display: 'flex',
-            justifyContent: 'flex-end',
-            paddingRight: '10px',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '10px 20px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
           }}
         >
+          <Typography variant="h6" sx={{ 
+            fontWeight: 'bold',
+            letterSpacing: 2,
+            background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            '&:hover': { transform: 'scale(1.05)', transition: 'transform 0.3s' }
+          }}>
+            Morpheus
+          </Typography>
           <IconButton
             onClick={handleDrawerToggle}
-            style={{
-              color: '#e0e0e0',
-              marginTop: '10px',
-              zIndex: 1,
+            sx={{ 
+              color: 'common.white',
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
             }}
           >
             <CloseIcon />
@@ -90,37 +119,26 @@ export default function Sidebar() {
         <List>
           {pages.map((page) => (
             <React.Fragment key={page.name}>
-              <ListItem
-                button
+              <ListItemButton
                 onClick={() => {
                   if (page.children) {
                     handleDropdownClick(page.name);
                   }
                 }}
-                style={{
-                  paddingLeft: '20px',
-                  color: '#f0f0f0',
-                  cursor: 'pointer',
+                sx={{
+                  '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
                 }}
               >
-                <Link href={page.path} passHref>
-                  <ListItemText
-                    primary={page.name}
-                    style={{
-                      color: '#f0f0f0',
-                      fontSize: '18px',
-                      fontWeight: 500,
-                    }}
-                  />
+                <ListItemIcon sx={{ color: 'common.white', minWidth: '40px' }}>
+                  {page.icon}
+                </ListItemIcon>
+                <Link href={page.path} passHref style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}>
+                  <ListItemText primary={page.name} />
                 </Link>
-                {page.children ? (
-                  openDropdown === page.name ? (
-                    <ExpandLess style={{ color: '#f0f0f0' }} />
-                  ) : (
-                    <ExpandMore style={{ color: '#f0f0f0' }} />
-                  )
-                ) : null}
-              </ListItem>
+                {page.children && (
+                  openDropdown === page.name ? <ExpandLess /> : <ExpandMore />
+                )}
+              </ListItemButton>
               {page.children && (
                 <Collapse
                   in={openDropdown === page.name}
@@ -129,26 +147,20 @@ export default function Sidebar() {
                 >
                   <List component='div' disablePadding>
                     {page.children.map((child) => (
-                      <ListItem
+                      <ListItemButton
                         key={child.name}
-                        button
-                        style={{
-                          paddingLeft: '40px',
-                          color: '#e0e0e0',
-                          cursor: 'pointer',
+                        sx={{
+                          pl: 4,
+                          '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
                         }}
                       >
-                        <Link href={child.path} passHref>
-                          <ListItemText
-                            primary={child.name}
-                            style={{
-                              color: '#e0e0e0',
-                              fontSize: '16px',
-                              fontWeight: 400,
-                            }}
-                          />
+                        <ListItemIcon sx={{ color: 'common.white', minWidth: '40px' }}>
+                          {child.icon}
+                        </ListItemIcon>
+                        <Link href={child.path} passHref style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}>
+                          <ListItemText primary={child.name} />
                         </Link>
-                      </ListItem>
+                      </ListItemButton>
                     ))}
                   </List>
                 </Collapse>
