@@ -11,26 +11,15 @@ const Dashboard: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start', // Changed from 'center' to 'flex-start'
         overflow: 'hidden',
-        padding: 0,
+        padding: '32px 0', // Added padding to the top and bottom
         margin: 0,
       }}
     >
-      <Box
-        sx={{
-          width: '100%',
-          backgroundColor: '#2b6cb0',
-          padding: '16px',
-          borderRadius: '8px',
-        }}
-      >
-        {/* Header Section */}
-      </Box>
-
       <Typography
         variant='h2'
-        sx={{ color: 'white', marginTop: 4, marginBottom: 4 }}
+        sx={{ color: 'white', marginBottom: 4 }} // Removed marginTop
       >
         Docker Dashboard 📊
       </Typography>
