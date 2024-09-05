@@ -25,10 +25,22 @@ export default async function ContainersPage() {
       backgroundColor: '#D8DCDD', 
       minHeight: '100vh',
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'Left',
     }}>
       <Container maxWidth='md' sx={{ py: 2, flexGrow: 1 }}>
-        <Typography variant="h5" component="h1" gutterBottom sx={{ mb: 2 }}>
+        <Typography 
+          variant="h4" 
+          component="h1" 
+          gutterBottom 
+          sx={{ 
+            mb: 3, 
+            fontWeight: 'bold',
+            color: '#2C3E50',
+            textAlign: 'center',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+          }}
+        >
           Docker Containers
         </Typography>
         <Paper elevation={3}>
