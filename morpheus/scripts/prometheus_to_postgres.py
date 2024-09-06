@@ -1,11 +1,18 @@
+import os
 import requests
 import psycopg2
 import time
 from datetime import datetime
 
-# Prometheus and PostgreSQL connection details
-PROMETHEUS_URL = "http://localhost:50002"  # Based on the PROMETHEUS_URL in the codebase
-POSTGRES_CONN = "dbname=morpheus user=admin password=admin host=localhost port=50005"  # Based on the postgres configuration in docker-compose-morpheus.yaml
+# Use environment variables for connection details
+PROMETHEUS_URL = os.environ.get('PROMETHEUS_URL', 'http://prometheus:9090')
+POSTGRES_HOST = os.environ.get('POSTGRES_HOST', 'postgres')
+POSTGRES_PORT = os.environ.get('POSTGRES_PORT', '5432')
+POSTGRES_DB = os.environ.get('POSTGRES_DB', 'morpheus')
+POSTGRES_USER = os.environ.get('POSTGRES_USER', 'admin')
+POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', 'admin')
+
+POSTGRES_CONN = f"dbname={POSTGRES_DB} user={POSTGRES_USER} password={POSTGRES_PASSWORD} host={POSTGRES_HOST} port={POSTGRES_PORT}"
 
 # SQL query to insert metrics
 INSERT_METRIC_QUERY = """
@@ -17,22 +24,19 @@ VALUES (%s, %s, %s, %s, %s, %s)
 def get_metrics():
     metrics = {}
     queries = [
-        ('CPU_usage', 'sum(rate(container_cpu_usage_seconds_total{name=~".+"}[5m])) by (name)'),
-        ('memory', 'sum(container_memory_usage_bytes{name=~".+"}) by (name)'),
-        ('diskSpace', 'sum(container_fs_usage_bytes{name=~".+"}) by (name)'),
-        ('swap', 'sum(container_memory_swap{name=~".+"}) by (name)'),
+        ('CPU_usage', 'sum(rate(container_cpu_usage_seconds_total{name=~".+"}[5m])) * 100'),
+        ('memory', 'sum(container_memory_usage_bytes{name=~".+"})'),
+        ('diskSpace', 'sum(container_fs_usage_bytes{name=~".+"})'),
+        ('swap', 'sum(container_memory_swap{name=~".+"})'),
         ('available_memory', 'node_memory_MemAvailable_bytes')
     ]
-    
+
     for metric_name, query in queries:
         response = requests.get(f"{PROMETHEUS_URL}/api/v1/query", params={"query": query})
         data = response.json()
         if data['status'] == 'success' and data['data']['result']:
-            value = float(data['data']['result'][0]['value'][1])
-            if metric_name == 'CPU_usage':
-                value *= 100  # Convert CPU usage to percentage
-            metrics[metric_name] = value
-    
+            metrics[metric_name] = float(data['data']['result'][0]['value'][1])
+
     return metrics
 
 # Function to insert metrics into PostgreSQL
@@ -60,7 +64,7 @@ def main():
             print(f"Metrics inserted at {datetime.now()}")
         except Exception as e:
             print(f"Error occurred: {e}")
-        
+
         time.sleep(300)  # Run every 5 minutes
 
 if __name__ == "__main__":
