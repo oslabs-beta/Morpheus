@@ -123,6 +123,8 @@ function Header() {
 
   const handleDrawerClose = () => {
     setOpen(false);
+    setDockerFolderOpen(false);
+    setKubernetesOpen(false);
   };
 
   const handleDockerFolderClick = () => {
@@ -181,6 +183,7 @@ function Header() {
               <IconButton 
                 color="inherit" 
                 sx={{ ml: 1 }}
+                data-testid="settings-icon"
               >
                 <FaGear />
               </IconButton>
@@ -202,6 +205,7 @@ function Header() {
       </AppBar>
 
       <Drawer
+        data-testid="sidebar-drawer"
         sx={{
           width: drawerWidth,
           flexShrink: 0,
@@ -222,7 +226,7 @@ function Header() {
           backgroundColor: 'transparent', 
           borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
         }}>
-          <IconButton onClick={handleDrawerClose} sx={{ 
+          <IconButton onClick={handleDrawerClose} data-testid="close-drawer-button" sx={{ 
             color: 'common.white',
             '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
           }}>
