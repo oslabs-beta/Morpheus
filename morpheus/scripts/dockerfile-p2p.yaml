@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY prometheus_to_postgres.py .
 
-CMD ["python", "prometheus_to_postgres.py"]
+CMD ["python", "-u", "prometheus_to_postgres.py"]
