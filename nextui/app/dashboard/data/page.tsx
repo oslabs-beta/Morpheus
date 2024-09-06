@@ -23,7 +23,9 @@ export default function DashboardData() {
   const [isButtonVisible, setIsButtonVisible] = useState(true);
   const [typedData, setTypedData] = useState('');
   const [fadeState, setFadeState] = useState<'fade-in' | 'fade-out'>('fade-in');
-  const [textBoxFadeState, setTextBoxFadeState] = useState<'fade-in' | 'fade-out'>('fade-out'); // Initially fade-out
+  const [textBoxFadeState, setTextBoxFadeState] = useState<
+    'fade-in' | 'fade-out'
+  >('fade-out'); // Initially fade-out
   const [isLoading, setIsLoading] = useState(false);
   const [floatingElements, setFloatingElements] = useState<FloatingElement[]>(
     []
@@ -40,7 +42,7 @@ export default function DashboardData() {
     try {
       const response = await axios.get('/api/aws-bedrock');
       console.log(response.data);
-      setData(response.data);
+      setData(response.data.result);
       setIsLoading(false);
       setTextBoxFadeState('fade-in'); // Start fading in the text box
     } catch (error) {
@@ -119,12 +121,25 @@ export default function DashboardData() {
       ))}
       <div className={styles['button-wrapper']}>
         {isButtonVisible && (
-          <button className={`${styles['aws-btn']} ${styles[fadeState]}`} onClick={onClickHandle}>
-            <Image src="/aws-bedrock-logo.png" alt="AWS Bedrock Logo" className={styles['logo']} />
+          <button
+            className={`${styles['aws-btn']} ${styles[fadeState]}`}
+            onClick={onClickHandle}
+          >
+            <Image
+              src='/aws-bedrock-logo.png'
+              alt='AWS Bedrock Logo'
+              className={styles['logo']}
+              width={24}
+              height={24}
+            />
             <span>Analyze Data</span>
           </button>
         )}
-        {isLoading && <div className={`${styles['loading-spinner']} ${styles['fade-in']}`}></div>}
+        {isLoading && (
+          <div
+            className={`${styles['loading-spinner']} ${styles['fade-in']}`}
+          ></div>
+        )}
       </div>
       <div className={`${styles['data-display']} ${styles[textBoxFadeState]}`}>
         <ReactMarkdown>{typedData}</ReactMarkdown>
