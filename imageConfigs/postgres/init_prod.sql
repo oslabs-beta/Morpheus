@@ -29,7 +29,14 @@ CREATE TABLE usersettings(
     email varchar PRIMARY KEY NOT NULL
 );
 
+CREATE TABLE conversation_history (
+  id serial PRIMARY KEY NOT NULL,
+  conversation JSONB NOT NULL,
+  last_updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 ALTER TABLE dashboards OWNER TO admin;
 ALTER TABLE services OWNER TO admin;
 ALTER TABLE snapshots OWNER TO admin;
 ALTER TABLE usersettings OWNER to admin;
+ALTER TABLE conversation_history OWNER TO admin;
