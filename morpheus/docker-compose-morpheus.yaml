@@ -123,6 +123,28 @@ services:
     depends_on:
       - morpheus
 
+  prometheus-to-postgres:
+    build:
+      context: ./scripts
+      dockerfile: dockerfile-p2p.yaml
+    depends_on:
+      - prometheus
+      - postgres
+    environment:
+      - PROMETHEUS_URL=http://prometheus:9090
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=morpheus
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - LOG_LEVEL=INFO
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        tag: "{{.Name}}"
+
 volumes:
   morpheus-prometheus-data:
   morpheus-prometheus-files:
