@@ -92,6 +92,15 @@ export async function GET(req: Request) {
          - The memory usage for the \`morpheus-grafana\` container is relatively high at 204 MB, while the other containers have lower memory usage.
          - Ensure that the memory limits and requests for the \`morpheus-grafana\` container are appropriate for its workload. If the memory usage is consistently high, you may need to increase the memory allocation for this container.
          - Monitor the memory usage over time and adjust the memory resources as needed to prevent out-of-memory issues.
+         
+      1. **CPU Usage**:
+         - The CPU usage for all containers is currently at 0%, which suggests that the system is not under high CPU load. This could indicate that the resources allocated to these containers are sufficient or potentially excessive.
+         - Consider monitoring the CPU usage over time and adjusting the CPU resources allocated to each container based on actual load and requirements.
+
+      2. **Memory Usage**:
+         - The memory usage for the \`morpheus-grafana\` container is relatively high at 204 MB, while the other containers have lower memory usage.
+         - Ensure that the memory limits and requests for the \`morpheus-grafana\` container are appropriate for its workload. If the memory usage is consistently high, you may need to increase the memory allocation for this container.
+         - Monitor the memory usage over time and adjust the memory resources as needed to prevent out-of-memory issues.
     `;
 
     await new Promise((resolve) => setTimeout(resolve, 2000));
