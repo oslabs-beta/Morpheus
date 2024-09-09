@@ -36,4 +36,38 @@ describe('SystemData Dashboard', () => {
     expect(screen.getByText('Sent packets Data')).toBeInTheDocument();
     expect(screen.getByText('Received Packets Data')).toBeInTheDocument();
   });
+
+  it('renders the correct number of Paper components', () => {
+    render(<Dashboard />);
+    const paperComponents = document.querySelectorAll('.MuiPaper-root');
+    expect(paperComponents.length).toBe(11); // Adjust this number based on your actual Paper components
+  });
+
+  it('renders the correct number of iframes with specific sources', () => {
+    render(<Dashboard />);
+    const systemIframes = document.querySelectorAll('iframe[src*="system?orgId=1"]');
+    const dockerIframes = document.querySelectorAll('iframe[src*="docker-container?orgId=1"]');
+    expect(systemIframes.length).toBe(7); // Adjust based on actual number
+    expect(dockerIframes.length).toBe(4); // Adjust based on actual number
+  });
+
+  it('renders the correct classes for grid items', () => {
+    render(<Dashboard />);
+    const dataCardGrid1Items = document.querySelectorAll('.dataCardGrid1');
+    const dataCardGrid2Items = document.querySelectorAll('.dataCardGrid2');
+    const thirdGridItems = document.querySelectorAll('.thirdGridItems');
+    expect(dataCardGrid1Items.length).toBe(3);
+    expect(dataCardGrid2Items.length).toBe(2);
+    expect(thirdGridItems.length).toBe(6);
+  });
+
+  it('renders the correct header classes', () => {
+    render(<Dashboard />);
+    const cpuHeaders = document.querySelectorAll('.cardHeaderCPU');
+    const memoryHeaders = document.querySelectorAll('.cardHeaderMemory');
+    const networkHeaders = document.querySelectorAll('.cardHeaderNetwork');
+    expect(cpuHeaders.length).toBe(3);
+    expect(memoryHeaders.length).toBe(3);
+    expect(networkHeaders.length).toBe(3);
+  });
 });
