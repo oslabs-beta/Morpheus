@@ -29,16 +29,22 @@
    - For simplicity select `Other` -> `Next` -> `Create access key`, and now save your Access key and Secret access key somewhere secure
 
 3. Setup credentials in the repo
-   3a. In Vscode's file explorer navigate to `nextui` -> `app`
-   3b. Create a new file called `.env.local`
+   3a. In VS Code's file explorer navigate to the `nextui` directory
+   3b. Create a new file called `.env.local` within the `nextui` directory
    3c. Setup your .env.local file to mirror this example:
 
    ```
    .env.local file
 
-   ACCESS_KEY_ID = <your access_key_id>
-   SECRET_ACCESS_KEY = <your secret_access_key>
+   ACCESS_KEY_ID =<your access_key_id>
+   SECRET_ACCESS_KEY =<your secret_access_key>
+   OPENAI_API_KEY= <your openai api key>
    ```
+
+4. Switching to development mode to work with dummy data
+   4a. Navigate to `nextui` -> `api` -> `aws-bedrock` -> `route.ts`
+   4b. Within the `export async function GET(req: Request)` function, comment out the AWS Bedrock API call block
+   4c. Uncomment the dummy data block and save the file
 
 # Setting Up Development Environment
 
