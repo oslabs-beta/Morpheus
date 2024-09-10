@@ -12,40 +12,51 @@ const AIChat: React.FC<AIChatProps> = ({ messages }) => {
       elevation={0}
       sx={{
         flexGrow: 1,
-        overflowY: 'auto',
-        p: 2,
         display: 'flex',
         flexDirection: 'column',
-        border: '2px solid', // Add a border
-        borderColor: 'divider', // Use theme's divider color
+        border: '2px solid',
+        borderColor: 'divider',
+        height: 'calc(100% - 120px)', // Adjust this value to leave space for the form elements
+        overflow: 'hidden',
       }}
     >
-      {messages.length === 0 ? (
-        <Box
-          sx={{
-            flex: 1,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Typography
-            variant='body1'
-            sx={{ color: 'text.secondary', fontStyle: 'italic' }}
+      <Box
+        sx={{
+          flexGrow: 1,
+          maxHeight: '100vh',
+          overflowY: 'auto',
+          p: 2,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {messages.length === 0 ? (
+          <Box
+            sx={{
+              flex: 1,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
           >
-            Your results will appear here.
-          </Typography>
-        </Box>
-      ) : (
-        [...messages].reverse().map((message, index) => (
-          <Box key={index} sx={{ mb: 2 }}>
-            <Typography variant='subtitle2' sx={{ fontWeight: 'bold' }}>
-              {message.role === 'user' ? 'You' : 'AI'}:
+            <Typography
+              variant='body1'
+              sx={{ color: 'text.secondary', fontStyle: 'italic' }}
+            >
+              Your results will appear here.
             </Typography>
-            <ReactMarkdown>{message.content}</ReactMarkdown>
           </Box>
-        ))
-      )}
+        ) : (
+          messages.map((message, index) => (
+            <Box key={index} sx={{ mb: 2 }}>
+              <Typography variant='subtitle2' sx={{ fontWeight: 'bold' }}>
+                {message.role === 'user' ? 'You' : 'AI'}:
+              </Typography>
+              <ReactMarkdown>{message.content}</ReactMarkdown>
+            </Box>
+          ))
+        )}
+      </Box>
     </Paper>
   );
 };
