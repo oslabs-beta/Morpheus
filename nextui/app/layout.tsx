@@ -13,7 +13,7 @@ const Header = dynamic(() => import('./components/Header/Header'), {
   ssr: false,
 });
 
-<!-- const Header = React.lazy(() => import('./components/Header/Header')); -->
+// const Header = React.lazy(() => import('./components/Header/Header'));
 
 export const metadata: Metadata = {
   title: 'Morpheus',
@@ -33,10 +33,10 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <div className='flex flex-col min-h-screen'>
-<!--           {/* Use Suspense to handle the lazy loading */}
-          <Suspense fallback={<div>Loading...</div>}> -->
-            <Header />
-<!--           </Suspense> -->
+          {/* Use Suspense to handle the lazy loading */}
+          {/* <Suspense fallback={<div>Loading...</div>}> */}
+          <Header />
+          {/* </Suspense> */}
           <main className='flex-grow'>{children}</main>
         </div>
       </body>
