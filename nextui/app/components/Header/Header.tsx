@@ -137,62 +137,79 @@ function Header() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <AppBar position="fixed" open={open} sx={{ 
-        backgroundColor: 'transparent', 
-        boxShadow: 'none',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
-      }}>
+      <AppBar
+        position='fixed'
+        open={open}
+        sx={{
+          backgroundColor: 'transparent',
+          boxShadow: 'none',
+          backdropFilter: 'blur(10px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        }}
+      >
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <IconButton
-              color="inherit"
-              aria-label="open drawer"
+              color='inherit'
+              aria-label='open drawer'
               onClick={handleDrawerOpen}
-              edge="start"
-              sx={{ 
-                mr: 2, 
+              edge='start'
+              sx={{
+                mr: 2,
                 ...(open && { display: 'none' }),
-                '&:hover': { transform: 'rotate(90deg)', transition: 'transform 0.3s' }
+                '&:hover': {
+                  transform: 'rotate(90deg)',
+                  transition: 'transform 0.3s',
+                },
               }}
             >
               <Image
-                src="/sidebarIcon.png"
-                alt="Menu Icon"
-                width={40} 
-                height={40} 
+                src='/sidebarIcon.png'
+                alt='Menu Icon'
+                width={40}
+                height={40}
               />
             </IconButton>
-            <Link href="/" passHref style={{ textDecoration: 'none', color: 'inherit' }}>
-              <Typography variant="h6" noWrap component="div" sx={{ 
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                letterSpacing: 2,
-                background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                '&:hover': { transform: 'scale(1.05)', transition: 'transform 0.3s' }
-              }}>
+            <Link
+              href='/'
+              passHref
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
+              <Typography
+                variant='h6'
+                noWrap
+                component='div'
+                sx={{
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  letterSpacing: 2,
+                  background:
+                    'linear-gradient(45deg, #59D7F7 20%, #2196F3 60%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                    transition: 'transform 0.3s',
+                  },
+                }}
+              >
                 Morpheus
               </Typography>
             </Link>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {/* Add some header actions or user info here */}
-            <Link href="/dashboard/settings" passHref>
-              <IconButton 
-                color="inherit" 
+            <Link href='/dashboard/settings' passHref>
+              <IconButton
+                color='inherit'
                 sx={{ ml: 1 }}
-                data-testid="settings-icon"
+                data-testid='settings-icon'
               >
                 <FaGear />
               </IconButton>
             </Link>
-            <Link href="/metrics" passHref>
-              <IconButton 
-                color="inherit" 
-                sx={{ ml: 1 }}
-              >
+            <Link href='/metrics' passHref>
+              <IconButton color='inherit' sx={{ ml: 1 }}>
                 <FaDatabase />
               </IconButton>
             </Link>
@@ -205,7 +222,7 @@ function Header() {
       </AppBar>
 
       <Drawer
-        data-testid="sidebar-drawer"
+        data-testid='sidebar-drawer'
         sx={{
           width: drawerWidth,
           flexShrink: 0,
@@ -215,52 +232,71 @@ function Header() {
             backgroundColor: 'rgba(18, 18, 18, 0.8)',
             backdropFilter: 'blur(10px)',
             color: 'common.white',
-            borderRight: '1px solid rgba(255, 255, 255, 0.1)'
+            borderRight: '1px solid rgba(255, 255, 255, 0.1)',
           },
         }}
-        variant="persistent"
-        anchor="left"
+        variant='persistent'
+        anchor='left'
         open={open}
       >
-        <DrawerHeader sx={{ 
-          backgroundColor: 'transparent', 
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
-        }}>
-          <IconButton onClick={handleDrawerClose} data-testid="close-drawer-button" sx={{ 
-            color: 'common.white',
-            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
-          }}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+        <DrawerHeader
+          sx={{
+            backgroundColor: 'transparent',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          }}
+        >
+          <IconButton
+            onClick={handleDrawerClose}
+            data-testid='close-drawer-button'
+            sx={{
+              color: 'common.white',
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+            }}
+          >
+            {theme.direction === 'ltr' ? (
+              <ChevronLeftIcon />
+            ) : (
+              <ChevronRightIcon />
+            )}
           </IconButton>
         </DrawerHeader>
         <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
         <List>
           {/* Docker folder */}
-          <ListItemButton 
-            onClick={handleDockerFolderClick} 
-            sx={{ 
+          <ListItemButton
+            onClick={handleDockerFolderClick}
+            sx={{
               '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
-              transition: 'background-color 0.3s'
+              transition: 'background-color 0.3s',
             }}
           >
             <ListItemIcon sx={{ color: 'common.white' }}>
               <FaDocker />
             </ListItemIcon>
-            <ListItemText primary="Docker" />
+            <ListItemText primary='Docker' />
             {DockerFolderOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          <Collapse in={DockerFolderOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
+          <Collapse in={DockerFolderOpen} timeout='auto' unmountOnExit>
+            <List component='div' disablePadding>
               {dockerPages.map((page) => (
-                <Link key={page.name} href={page.path} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <ListItemButton 
-                    sx={{ 
-                      pl: 4, 
-                      '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
-                      transition: 'background-color 0.3s'
+                <Link
+                  key={page.name}
+                  href={page.path}
+                  passHref
+                  style={{ textDecoration: 'none', color: 'inherit' }}
+                >
+                  <ListItemButton
+                    sx={{
+                      pl: 4,
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      },
+                      transition: 'background-color 0.3s',
                     }}
                   >
-                    <ListItemIcon sx={{ color: 'common.white' }}>{page.icon}</ListItemIcon>
+                    <ListItemIcon sx={{ color: 'common.white' }}>
+                      {page.icon}
+                    </ListItemIcon>
                     <ListItemText primary={page.name} />
                   </ListItemButton>
                 </Link>
@@ -269,31 +305,40 @@ function Header() {
           </Collapse>
 
           {/* Kubernetes folder */}
-          <ListItemButton 
-            onClick={handleKubernetesFolderClick} 
-            sx={{ 
+          <ListItemButton
+            onClick={handleKubernetesFolderClick}
+            sx={{
               '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
-              transition: 'background-color 0.3s'
+              transition: 'background-color 0.3s',
             }}
           >
             <ListItemIcon sx={{ color: 'common.white' }}>
               <BiLogoKubernetes />
             </ListItemIcon>
-            <ListItemText primary="Kubernetes" />
+            <ListItemText primary='Kubernetes' />
             {kubernetesOpen ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-          <Collapse in={kubernetesOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
+          <Collapse in={kubernetesOpen} timeout='auto' unmountOnExit>
+            <List component='div' disablePadding>
               {kubernetesPages.map((page) => (
-                <Link key={page.name} href={page.path} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <ListItemButton 
-                    sx={{ 
-                      pl: 4, 
-                      '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
-                      transition: 'background-color 0.3s'
+                <Link
+                  key={page.name}
+                  href={page.path}
+                  passHref
+                  style={{ textDecoration: 'none', color: 'inherit' }}
+                >
+                  <ListItemButton
+                    sx={{
+                      pl: 4,
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      },
+                      transition: 'background-color 0.3s',
                     }}
                   >
-                    <ListItemIcon sx={{ color: 'common.white' }}>{page.icon}</ListItemIcon>
+                    <ListItemIcon sx={{ color: 'common.white' }}>
+                      {page.icon}
+                    </ListItemIcon>
                     <ListItemText primary={page.name} />
                   </ListItemButton>
                 </Link>
@@ -303,15 +348,22 @@ function Header() {
 
           {/* Other pages */}
           {pages.map((page) => (
-            <Link key={page.name} href={page.path} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link
+              key={page.name}
+              href={page.path}
+              passHref
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
               <ListItem disablePadding>
-                <ListItemButton 
-                  sx={{ 
+                <ListItemButton
+                  sx={{
                     '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
-                    transition: 'background-color 0.3s'
+                    transition: 'background-color 0.3s',
                   }}
                 >
-                  <ListItemIcon sx={{ color: 'common.white' }}>{page.icon}</ListItemIcon>
+                  <ListItemIcon sx={{ color: 'common.white' }}>
+                    {page.icon}
+                  </ListItemIcon>
                   <ListItemText primary={page.name} />
                 </ListItemButton>
               </ListItem>
