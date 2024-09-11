@@ -12,7 +12,6 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItem from '@mui/material/ListItem';
@@ -24,7 +23,7 @@ import KubernetesIcon from '@mui/icons-material/Cloud';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
-import ContainerIcon from '@mui/icons-material/ViewInAr'; // Import for Docker icon (container representation)
+import ContainerIcon from '@mui/icons-material/ViewInAr';
 import { FaDocker, FaAws, FaBitcoin } from 'react-icons/fa';
 import { BiLogoKubernetes } from 'react-icons/bi';
 import { FaDatabase, FaGear } from 'react-icons/fa6';
@@ -77,7 +76,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
   justifyContent: 'flex-end',
 }));
@@ -113,27 +111,20 @@ function Header() {
   const [DockerFolderOpen, setDockerFolderOpen] = React.useState(false);
   const [kubernetesOpen, setKubernetesOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    // Any client-side only logic can go here
-  }, [pathname]);
+  // Memoize static pages to prevent unnecessary re-renders
+  const memoizedPages = React.useMemo(() => pages, []);
+  const memoizedDockerPages = React.useMemo(() => dockerPages, []);
+  const memoizedKubernetesPages = React.useMemo(() => kubernetesPages, []);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
+  const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => {
     setOpen(false);
     setDockerFolderOpen(false);
     setKubernetesOpen(false);
   };
 
-  const handleDockerFolderClick = () => {
-    setDockerFolderOpen(!DockerFolderOpen);
-  };
-
-  const handleKubernetesFolderClick = () => {
-    setKubernetesOpen(!kubernetesOpen);
-  };
+  const handleDockerFolderClick = () => setDockerFolderOpen(!DockerFolderOpen);
+  const handleKubernetesFolderClick = () => setKubernetesOpen(!kubernetesOpen);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -184,7 +175,9 @@ function Header() {
                   fontWeight: 'bold',
                   letterSpacing: 2,
                   background:
-                    'linear-gradient(45deg, #59D7F7 20%, #2196F3 60%)',
+
+                  'linear-gradient(45deg, #59D7F7 20%, #2196F3 60%)',
+
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   '&:hover': {
@@ -198,7 +191,7 @@ function Header() {
             </Link>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {/* Add some header actions or user info here */}
+
             <Link href='/dashboard/settings' passHref>
               <IconButton
                 color='inherit'
@@ -213,10 +206,6 @@ function Header() {
                 <FaDatabase />
               </IconButton>
             </Link>
-            {/* Add a user avatar or profile button */}
-            {/* <IconButton color="inherit" sx={{ ml: 2, border: '2px solid currentColor', borderRadius: '50%' }}>
-              <Typography variant="body2">JD</Typography>
-            </IconButton> */}
           </Box>
         </Toolbar>
       </AppBar>
@@ -278,7 +267,7 @@ function Header() {
           </ListItemButton>
           <Collapse in={DockerFolderOpen} timeout='auto' unmountOnExit>
             <List component='div' disablePadding>
-              {dockerPages.map((page) => (
+              {memoizedDockerPages.map((page) => (
                 <Link
                   key={page.name}
                   href={page.path}
@@ -320,6 +309,7 @@ function Header() {
           </ListItemButton>
           <Collapse in={kubernetesOpen} timeout='auto' unmountOnExit>
             <List component='div' disablePadding>
+
               {kubernetesPages.map((page) => (
                 <Link
                   key={page.name}
@@ -346,8 +336,7 @@ function Header() {
             </List>
           </Collapse>
 
-          {/* Other pages */}
-          {pages.map((page) => (
+          {memoizedPages.map((page) => (
             <Link
               key={page.name}
               href={page.path}
@@ -374,7 +363,6 @@ function Header() {
 
       <Main open={open}>
         <DrawerHeader />
-        {/* Your main content goes here */}
       </Main>
     </Box>
   );
