@@ -28,7 +28,7 @@
 
 <p align="center" style="font-size: 1em">
 <a name="website" href="">Website</a>
-<a name="medium" href="">Medium</a>
+<a name="medium" href="https://medium.com/@snc100/morpheus-your-all-in-one-monitoring-solution-695995a756f2">Medium</a>
 <a name="linkedin" href="">LinkedIn</a>
 </p>
 </div>
