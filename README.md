@@ -89,6 +89,7 @@ Visualize your Kubernetes cluster with an interactive graph representation.
 Manage your Docker containers with ease.
 
 </div>
+
 ## Contributing
 
 Contributions play a vital role in the open-source community. Any contributions are greatly appreciated!
