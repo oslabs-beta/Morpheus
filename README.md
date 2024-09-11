@@ -55,19 +55,20 @@ Go ahead and open up the [README-DEVELOPER](https://github.com/oslabs-beta/Morph
 | Consistent styles between pages for optimal user experience  | ✅     |
 
 - ✅ = Ready to use
-  <br />
-
-## Your All-in-One Monitoring Dashboard
-
-![Morpheus Demo](docs/morpheus_demo1.gif)
-
-Our main dashboard provides a real time comprehensive view of your Docker containers and Kubernetes metrics.
+<br />
+<div align="center">
 
 ## Morpheus Homepage
 
 ![Morpheus Demo](docs/morpheus_demo2.gif)
 
 The Morpheus homepage is your entry point to the application.
+
+## Your All-in-One Monitoring Dashboard
+
+![Morpheus Demo](docs/morpheus_demo1.gif)
+
+Our main dashboard provides a real time comprehensive view of your Docker containers and Kubernetes metrics.
 
 ## Data Analysis & AWS Bedrock Implementation
 
@@ -87,6 +88,7 @@ Visualize your Kubernetes cluster with an interactive graph representation.
 
 Manage your Docker containers with ease.
 
+</div>
 ## Contributing
 
 Contributions play a vital role in the open-source community. Any contributions are greatly appreciated!
