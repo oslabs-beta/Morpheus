@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Header from './components/Header/Header'; // Adjust this path as necessary
+import Header from './components/Header/Header';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Morpheus',
   description:
-    'A Docker, kubernetes visualizer and dashboard tool with AI integration',
+    'A Docker, Kubernetes visualizer and dashboard tool with AI integration',
 };
 
 export default function RootLayout({
@@ -19,11 +19,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <div className="flex flex-col min-h-screen">
+        <div className='flex flex-col min-h-screen'>
           <Header />
-          <main className="flex-grow">
-            {children}
-          </main>
+          <main className='flex-grow'>{children}</main>
         </div>
       </body>
     </html>
