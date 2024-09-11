@@ -78,3 +78,4 @@ Contributions play a vital role in the open-source community. Any contributions 
 
 Please ⭐️ this project if you found it helpful, thank you!
 <br />
+![Morpheus Demo](docs/morpheus_demo1.gif)
