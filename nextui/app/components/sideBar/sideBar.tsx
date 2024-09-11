@@ -104,7 +104,8 @@ export default function Sidebar() {
             sx={{
               fontWeight: 'bold',
               letterSpacing: 2,
-              background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+
+              background: 'linear-gradient(45deg, #59D7F7 20%, #2196F3 60%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               '&:hover': {

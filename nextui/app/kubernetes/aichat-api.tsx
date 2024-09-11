@@ -57,16 +57,17 @@ const AIChatApi: React.FC = () => {
   return (
     <Box
       sx={{
-        height: '100%',
         display: 'flex',
         flexDirection: 'column',
+        height: '100%',
+        overflow: 'hidden',
       }}
     >
       {/* <Typography variant='h6' sx={{ mb: 2 }}>
         AI Analysis
       </Typography> */}
 
-      <FormControl fullWidth sx={{ mb: 2 }}>
+      <FormControl fullWidth sx={{ mt: 2, mb: 2 }}>
         <InputLabel id='model-select-label'>OpenAI Model</InputLabel>
         <Select
           labelId='model-select-label'
@@ -81,7 +82,7 @@ const AIChatApi: React.FC = () => {
       </FormControl>
       <form
         onSubmit={handleSubmit}
-        style={{ display: 'flex', marginBottom: '16px' }}
+        style={{ display: 'flex', marginBottom: '16px', height: '40px' }}
       >
         <TextField
           fullWidth
@@ -90,10 +91,36 @@ const AIChatApi: React.FC = () => {
           placeholder='Ask a question...'
           variant='outlined'
           size='small'
-          sx={{ mr: 1 }}
+          sx={{
+            mr: 1,
+            '& .MuiInputBase-root': {
+              height: '100%',
+              alignItems: 'flex-start',
+            },
+            '& .MuiInputBase-input': {
+              height: '100%',
+              overflow: 'auto',
+              '&::-webkit-scrollbar': {
+                width: '8px',
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: 'rgba(0,0,0,.2)',
+                borderRadius: '4px',
+              },
+            },
+          }}
           disabled={isLoading}
+          multiline
+          maxRows={1}
         />
-        <Button type='submit' variant='contained' disabled={isLoading}>
+        <Button
+          sx={{
+            backgroundColor: 'linear-gradient(45deg, #59D7F7 20%, #2196F3 60%)',
+          }}
+          type='submit'
+          variant='contained'
+          disabled={isLoading}
+        >
           {isLoading ? 'Analyzing...' : 'Analyze'}
         </Button>
       </form>

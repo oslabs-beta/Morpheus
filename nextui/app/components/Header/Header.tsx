@@ -175,7 +175,9 @@ function Header() {
                   fontWeight: 'bold',
                   letterSpacing: 2,
                   background:
-                    'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+
+                  'linear-gradient(45deg, #59D7F7 20%, #2196F3 60%)',
+
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   '&:hover': {
@@ -189,6 +191,7 @@ function Header() {
             </Link>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
+
             <Link href='/dashboard/settings' passHref>
               <IconButton
                 color='inherit'
@@ -306,7 +309,8 @@ function Header() {
           </ListItemButton>
           <Collapse in={kubernetesOpen} timeout='auto' unmountOnExit>
             <List component='div' disablePadding>
-              {memoizedKubernetesPages.map((page) => (
+
+              {kubernetesPages.map((page) => (
                 <Link
                   key={page.name}
                   href={page.path}
@@ -332,7 +336,6 @@ function Header() {
             </List>
           </Collapse>
 
-          {/* Other pages */}
           {memoizedPages.map((page) => (
             <Link
               key={page.name}
@@ -360,7 +363,6 @@ function Header() {
 
       <Main open={open}>
         <DrawerHeader />
-        {/* Your main content goes here */}
       </Main>
     </Box>
   );

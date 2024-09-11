@@ -8,7 +8,10 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'Morpheus',
   description:
-    'A Docker, Kubernetes visualizer and dashboard tool with AI integration',
+    'A Docker, kubernetes visualizer and dashboard tool with AI integration',
+  icons: {
+    icon: [{ url: '/morpheus-logo.png', sizes: '64x64', type: 'image/png' }],
+  },
 };
 
 export default function RootLayout({

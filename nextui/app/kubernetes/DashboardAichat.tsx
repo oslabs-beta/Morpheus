@@ -8,8 +8,11 @@ import serviceImage from '../../public/svc-128.png';
 import deploymentImage from '../../public/deploy-128.png';
 import './clusterView.css';
 import AIChatApi from './aichat-api';
-import { Box, Grid, Typography } from '@mui/material';
-import { StaticImageData } from 'next/image';
+import { Box, Grid, Typography, CssBaseline } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { StyledEngineProvider } from '@mui/material/styles';
+
+// ... (keep your existing interfaces and type definitions)
 
 // Add type definitions for cluster data and graph data
 interface ClusterData {
@@ -41,15 +44,95 @@ interface GraphData {
   edges: GraphEdge[];
 }
 
+const StyledContainer = styled(Box)(({ theme }) => ({
+  minHeight: '90.3vh',
+  width: '100%',
+  background: 'linear-gradient(to bottom, #d7dcdd 0%, #6981ac 100%)',
+  position: 'relative',
+  overflow: 'hidden',
+  display: 'flex',
+  flexDirection: 'column',
+}));
+
+const BackgroundShape = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  borderRadius: '50%',
+  background: 'rgba(255, 255, 255, 0.2)',
+  zIndex: 1,
+}));
+
+const GlassContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  zIndex: 3,
+  background: 'rgba(255, 255, 255, 0.01)',
+  backdropFilter: 'blur(10px)',
+  borderRadius: '20px',
+  border: '1px solid rgba(255, 255, 255, 1)',
+  padding: theme.spacing(2),
+  boxSizing: 'border-box',
+  boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+  width: '95%',
+  height: 'auto',
+  margin: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+}));
+
+const FrostedElement = styled(Box)(({ theme }) => ({
+  background: 'rgba(255, 255, 255, 0.3)',
+  backdropFilter: 'blur(10px)',
+  borderRadius: '10px',
+  border: '1px solid rgba(255, 255, 255, 1)',
+  padding: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+  width: '100%',
+  boxSizing: 'border-box',
+  '&::-webkit-scrollbar': {
+    width: '8px',
+    background: 'transparent',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    borderRadius: '10px',
+    border: '2px solid transparent',
+    backgroundClip: 'content-box',
+  },
+  scrollbarWidth: 'thin',
+  scrollbarColor: 'rgba(255, 255, 255, 0.5) transparent',
+}));
+
+const StyledHeader = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  background: 'linear-gradient(45deg, #59D7F7 20%, #2196F3 60%)',
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  backgroundClip: 'text',
+  color: 'transparent',
+}));
+
+const LeftContainer = styled(FrostedElement)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  height: '100%',
+  overflow: 'hidden',
+  padding: theme.spacing(2),
+}));
+
 const DashboardAichat = () => {
-  const [graphData, setGraphData] = useState<GraphData>({ nodes: [], edges: [] });
   const [loading, setLoading] = useState(true);
+  const [graphData, setGraphData] = useState<GraphData>({
+    nodes: [],
+    edges: [],
+  });
   const [clusterData, setClusterData] = useState<ClusterData | null>(null);
 
   useEffect(() => {
     fetch('/api/v1/clusterview')
       .then((response) => response.json())
-      .then((data) => {
+      .then((data: ClusterData) => {
         const { nodes, edges } = processClusterData(data);
         setClusterData(data);
         setGraphData({ nodes, edges });
@@ -112,7 +195,9 @@ const DashboardAichat = () => {
       if (clusterData.serviceToPods[service]) {
         // Create edges from Service to Pod
         clusterData.serviceToPods[service].forEach((podName) => {
-          const podIndex = clusterData.pods.findIndex((pod) => pod.name === podName);
+          const podIndex = clusterData.pods.findIndex(
+            (pod) => pod.name === podName
+          );
           if (podIndex !== -1) {
             edges.push({
               from: `service-${index}`,
@@ -157,6 +242,7 @@ const DashboardAichat = () => {
     edges: {
       color: '#000000',
     },
+    autoResize: true,
     height: '100%',
     width: '100%',
     interaction: {
@@ -184,9 +270,11 @@ const DashboardAichat = () => {
       timestep: 0.5, //speed to settle
     },
   };
+
   const events = {
     select: function (event: { nodes: string[]; edges: string[] }) {
       var { nodes, edges } = event;
+      // Handle selection event
     },
   };
 
@@ -195,31 +283,82 @@ const DashboardAichat = () => {
   }
 
   return (
-    <Box sx={{ flexGrow: 1, height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
-      <Grid container spacing={2} sx={{ height: '100%' }}>
-        <Grid item xs={12} md={4} sx={{ height: '100%', overflowY: 'auto' }}>
-          <Box sx={{ padding: 2 }}>
-            <Typography variant="h3" fontFamily={'avenir'} gutterBottom sx={{ mt: 5, mb: 5 }}>
-              Kubernetes Cluster View
-            </Typography>
-            <AIChatApi />
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={8} sx={{ height: '100%', overflow: 'hidden' }}>
-          <Box
-            sx={{
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              p: 2,
-              height: '100%',
-              overflow: 'auto',
-            }}
+    <StyledEngineProvider injectFirst>
+      <StyledContainer>
+        <CssBaseline />
+        <BackgroundShape
+          sx={{
+            width: '30vw',
+            height: '30vw',
+            top: '-10vw',
+            left: '-10vw',
+          }}
+        />
+        <BackgroundShape
+          sx={{
+            width: '30vw',
+            height: '30vw',
+            top: '-20vw',
+            left: '50vw',
+          }}
+        />
+        <BackgroundShape
+          sx={{
+            width: '30vw',
+            height: '30vw',
+            bottom: '-5vw',
+            right: '-5vw',
+          }}
+        />
+        <GlassContainer
+          sx={{
+            height: 'calc(100vh - 100px)',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <StyledHeader variant='h3'>Kubernetes Cluster View</StyledHeader>
+          <Grid
+            container
+            spacing={2}
+            sx={{ flexGrow: 1, mt: 2, height: 'calc(100% - 71px)' }}
           >
-            <Graph graph={graphData} options={graphOptions} events={events} />
-          </Box>
-        </Grid>
-      </Grid>
-    </Box>
+            <Grid
+              item
+              xs={12}
+              md={4}
+              sx={{
+                height: '100%',
+              }}
+            >
+              <LeftContainer>
+                <AIChatApi />
+              </LeftContainer>
+            </Grid>
+            <Grid item xs={12} md={8} sx={{ height: '60vh' }}>
+              <FrostedElement
+                sx={{
+                  height: '130%',
+                  overflow: 'hidden',
+                }}
+              >
+                <Box sx={{ width: '100%', height: '100%' }}>
+                  <Graph
+                    graph={graphData}
+                    options={{
+                      ...graphOptions,
+                      height: '100%',
+                      width: '100%',
+                    }}
+                    events={events}
+                  />
+                </Box>
+              </FrostedElement>
+            </Grid>
+          </Grid>
+        </GlassContainer>
+      </StyledContainer>
+    </StyledEngineProvider>
   );
 };
 
