@@ -1,9 +1,14 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Header from './components/Header/Header';
+import dynamic from 'next/dynamic';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
+
+const Header = dynamic(() => import('./components/Header/Header'), {
+  loading: () => <div style={{ height: '64px' }} />, // Adjust the height as needed
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: 'Morpheus',
