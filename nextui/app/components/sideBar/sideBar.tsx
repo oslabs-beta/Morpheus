@@ -18,13 +18,13 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
 import Link from 'next/link';
-import { FaDatabase, FaGear, FaDocker } from 'react-icons/fa';
+import { FaDatabase, FaCog, FaDocker } from 'react-icons/fa';
 import { BiLogoKubernetes } from 'react-icons/bi';
 import Image from 'next/image';
 
 const pages = [
   { name: 'Dashboard', path: '/dashboard', icon: <FaDatabase /> },
-  { name: 'Settings', path: '/dashboard/settings', icon: <FaGear /> },
+  { name: 'Settings', path: '/dashboard/settings', icon: <FaCog /> },
   {
     name: 'Data',
     path: '/dashboard/data',
@@ -57,17 +57,20 @@ export default function Sidebar() {
           aria-label='open drawer'
           onClick={handleDrawerToggle}
           edge='start'
-          sx={{ 
-            mr: 2, 
+          sx={{
+            mr: 2,
             color: 'white',
-            '&:hover': { transform: 'rotate(90deg)', transition: 'transform 0.3s' }
+            '&:hover': {
+              transform: 'rotate(90deg)',
+              transition: 'transform 0.3s',
+            },
           }}
         >
           <Image
-            src="/sidebarIcon.png"
-            alt="Menu Icon"
-            width={40} 
-            height={40} 
+            src='/sidebarIcon.png'
+            alt='Menu Icon'
+            width={40}
+            height={40}
           />
         </IconButton>
       </Toolbar>
@@ -83,7 +86,7 @@ export default function Sidebar() {
             backgroundColor: 'rgba(18, 18, 18, 0.8)',
             backdropFilter: 'blur(10px)',
             color: 'text.primary',
-            borderRight: '1px solid rgba(255, 255, 255, 0.1)'
+            borderRight: '1px solid rgba(255, 255, 255, 0.1)',
           },
         }}
       >
@@ -93,24 +96,30 @@ export default function Sidebar() {
             justifyContent: 'space-between',
             alignItems: 'center',
             padding: '10px 20px',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
           }}
         >
-          <Typography variant="h6" sx={{ 
-            fontWeight: 'bold',
-            letterSpacing: 2,
-            background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            '&:hover': { transform: 'scale(1.05)', transition: 'transform 0.3s' }
-          }}>
+          <Typography
+            variant='h6'
+            sx={{
+              fontWeight: 'bold',
+              letterSpacing: 2,
+              background: 'linear-gradient(45deg, #59D7F7 20%, #2196F3 60%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              '&:hover': {
+                transform: 'scale(1.05)',
+                transition: 'transform 0.3s',
+              },
+            }}
+          >
             Morpheus
           </Typography>
           <IconButton
             onClick={handleDrawerToggle}
-            sx={{ 
+            sx={{
               color: 'common.white',
-              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
+              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
             }}
           >
             <CloseIcon />
@@ -126,18 +135,29 @@ export default function Sidebar() {
                   }
                 }}
                 sx={{
-                  '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
+                  '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
                 }}
               >
                 <ListItemIcon sx={{ color: 'common.white', minWidth: '40px' }}>
                   {page.icon}
                 </ListItemIcon>
-                <Link href={page.path} passHref style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}>
+                <Link
+                  href={page.path}
+                  passHref
+                  style={{
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    flexGrow: 1,
+                  }}
+                >
                   <ListItemText primary={page.name} />
                 </Link>
-                {page.children && (
-                  openDropdown === page.name ? <ExpandLess /> : <ExpandMore />
-                )}
+                {page.children &&
+                  (openDropdown === page.name ? (
+                    <ExpandLess />
+                  ) : (
+                    <ExpandMore />
+                  ))}
               </ListItemButton>
               {page.children && (
                 <Collapse
@@ -151,13 +171,25 @@ export default function Sidebar() {
                         key={child.name}
                         sx={{
                           pl: 4,
-                          '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
+                          '&:hover': {
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                          },
                         }}
                       >
-                        <ListItemIcon sx={{ color: 'common.white', minWidth: '40px' }}>
+                        <ListItemIcon
+                          sx={{ color: 'common.white', minWidth: '40px' }}
+                        >
                           {child.icon}
                         </ListItemIcon>
-                        <Link href={child.path} passHref style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}>
+                        <Link
+                          href={child.path}
+                          passHref
+                          style={{
+                            textDecoration: 'none',
+                            color: 'inherit',
+                            flexGrow: 1,
+                          }}
+                        >
                           <ListItemText primary={child.name} />
                         </Link>
                       </ListItemButton>
