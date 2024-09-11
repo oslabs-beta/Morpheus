@@ -6,9 +6,9 @@ const nextConfig = {
     if (!isServer) {
       config.optimization.splitChunks = {
         chunks: 'all',
-        minSize: 20000,
-        maxSize: 200000,
-        maxInitialRequests: 25,
+        minSize: 30000,
+        maxSize: 250000,
+        maxInitialRequests: 10,
       };
     }
     config.module.rules.push({
