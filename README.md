@@ -33,7 +33,7 @@
 </p>
 </div>
 
-# Morpheus
+# Morpheus:
 
 Welcome to Morpheus, a developer-friendly Docker & Kubernetes application to visualize both container and cluster metrics.
 
@@ -57,6 +57,36 @@ Go ahead and open up the [README-DEVELOPER](https://github.com/oslabs-beta/Morph
 - ✅ = Ready to use
   <br />
 
+## Your All-in-One Monitoring Dashboard
+
+![Morpheus Demo](docs/morpheus_demo1.gif)
+
+Our main dashboard provides a real time comprehensive view of your Docker containers and Kubernetes metrics.
+
+## Morpheus Homepage
+
+![Morpheus Demo](docs/morpheus_demo2.gif)
+
+The Morpheus homepage is your entry point to the application.
+
+## Data Analysis & AWS Bedrock Implementation
+
+![Morpheus Demo](docs/morpheus_demo6.gif)
+
+Leverage AI-powered analysis of your Docker metrics using AWS Bedrock and Claude 3 Haiku.
+
+## Kubernetes Cluster View
+
+![Morpheus Demo](docs/morpheus_demo4.gif)
+
+Visualize your Kubernetes cluster with an interactive graph representation.
+
+## System Monitoring
+
+![Morpheus Demo](docs/morpheus_demo5.gif)
+
+Manage your Docker containers with ease.
+
 ## Contributing
 
 Contributions play a vital role in the open-source community. Any contributions are greatly appreciated!
@@ -78,6 +108,3 @@ Contributions play a vital role in the open-source community. Any contributions 
 
 Please ⭐️ this project if you found it helpful, thank you!
 <br />
-![Morpheus Demo](docs/morpheus_demo1.gif)
-![Morpheus Demo](docs/morpheus_demo2.gif)
-![Morpheus Demo](docs/morpheus_demo3.gif)
