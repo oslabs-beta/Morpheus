@@ -1,9 +1,13 @@
+import * as React from 'react';
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Header from './components/Header/Header';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
+
+// Lazy load the Header component
+const Header = React.lazy(() => import('./components/Header/Header'));
 
 export const metadata: Metadata = {
   title: 'Morpheus',
@@ -20,7 +24,10 @@ export default function RootLayout({
     <html lang='en'>
       <body className={inter.className}>
         <div className='flex flex-col min-h-screen'>
-          <Header />
+          {/* Use Suspense to handle the lazy loading */}
+          <Suspense fallback={<div>Loading...</div>}>
+            <Header />
+          </Suspense>
           <main className='flex-grow'>{children}</main>
         </div>
       </body>
