@@ -6,7 +6,6 @@ import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
-// Lazy load the Header component
 const Header = React.lazy(() => import('./components/Header/Header'));
 
 export const metadata: Metadata = {
