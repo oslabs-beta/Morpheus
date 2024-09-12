@@ -24,6 +24,7 @@ morpheus-down:
 
 morpheus-rm:
 	docker image remove -f morpheus-morpheus
+	docker image remove -f morpheus-prometheus-to-postgres
 
 build-dev:
 	docker build -t ${DEV_NAME} -f ${DOCKERFILEDIRECTORY}/dockerfile.dev .

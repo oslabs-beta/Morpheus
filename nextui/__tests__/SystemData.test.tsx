@@ -40,15 +40,15 @@ describe('SystemData Dashboard', () => {
   it('renders the correct number of Paper components', () => {
     render(<Dashboard />);
     const paperComponents = document.querySelectorAll('.MuiPaper-root');
-    expect(paperComponents.length).toBe(11); // Adjust this number based on your actual Paper components
+    expect(paperComponents.length).toBe(11); 
   });
 
   it('renders the correct number of iframes with specific sources', () => {
     render(<Dashboard />);
     const systemIframes = document.querySelectorAll('iframe[src*="system?orgId=1"]');
     const dockerIframes = document.querySelectorAll('iframe[src*="docker-container?orgId=1"]');
-    expect(systemIframes.length).toBe(7); // Adjust based on actual number
-    expect(dockerIframes.length).toBe(4); // Adjust based on actual number
+    expect(systemIframes.length).toBe(7); 
+    expect(dockerIframes.length).toBe(4); 
   });
 
   it('renders the correct classes for grid items', () => {
