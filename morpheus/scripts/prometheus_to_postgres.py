@@ -33,11 +33,12 @@ INSERT INTO snapshots (
     cpu_usage,
     memory_usage,
     available_memory,
+    total_memory,
     network_receive_bytes,
     network_transmit_bytes,
     load_average
 )
-VALUES (%s, %s, %s, %s, %s, %s, %s)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 """
 GET_SETTINGS_QUERY = """
 SELECT fetch_interval, run_immediately FROM settings WHERE id = 1
@@ -67,12 +68,13 @@ for attempt in range(max_retries):
 def get_metrics():
     metrics = {}
     queries = {
-        'cpu_usage': '100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)',
-        'memory_usage': 'node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes',
-        'available_memory': 'node_memory_MemAvailable_bytes',
+        'cpu_usage': '100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)',
+        'memory_usage': 'sum(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes)',
+        'available_memory': 'sum(node_memory_MemAvailable_bytes)',
+        'total_memory': 'sum(node_memory_MemTotal_bytes)',
         'network_receive_bytes': 'sum(rate(node_network_receive_bytes_total[5m]))',
         'network_transmit_bytes': 'sum(rate(node_network_transmit_bytes_total[5m]))',
-        'load_average': 'node_load1',
+        'load_average': 'avg(node_load1)',
     }
 
     try:
@@ -80,17 +82,18 @@ def get_metrics():
             response = requests.get(f"{PROMETHEUS_URL}/api/v1/query", params={"query": query})
             data = response.json()
             if data['status'] == 'success' and data['data']['result']:
-                # Sum up values if multiple results
-                value = sum(float(result['value'][1]) for result in data['data']['result'])
+                # Extract the single value
+                value = float(data['data']['result'][0]['value'][1])
                 metrics[metric_name] = value
             else:
-                logger.warning(f"Failed to fetch {metric_name} metric")
+                logging.warning(f"Failed to fetch {metric_name} metric")
                 metrics[metric_name] = None
     except Exception as e:
-        logger.error(f"Error fetching metrics from Prometheus: {e}")
+        logging.error(f"Error fetching metrics from Prometheus: {e}")
         raise
 
     return metrics
+
 
 # Function to insert metrics into PostgreSQL
 def insert_metrics(metrics):
@@ -105,15 +108,16 @@ def insert_metrics(metrics):
                     metrics.get('cpu_usage') or 0,
                     metrics.get('memory_usage') or 0,
                     metrics.get('available_memory') or 0,
+                    metrics.get('total_memory') or 0,
                     metrics.get('network_receive_bytes') or 0,
                     metrics.get('network_transmit_bytes') or 0,
                     metrics.get('load_average') or 0,
                 )
             )
         conn.commit()
-        logger.info("Metrics inserted successfully")
+        logging.info("Metrics inserted successfully")
     except Exception as e:
-        logger.error(f"Failed to insert metrics: {str(e)}")
+        logging.error(f"Failed to insert metrics: {str(e)}")
     finally:
         if conn:
             connection_pool.putconn(conn)
