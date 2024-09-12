@@ -2,50 +2,62 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './MetricsDisplay.module.css';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip as RechartsTooltip,
+  Legend,
+  CartesianGrid,
+  ResponsiveContainer,
+} from 'recharts';
+import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 interface Metric {
   id: number;
   metric_date: string;
-  diskSpace: string;
-  memory: string;
-  swap: string;
-  CPU_usage: string;
-  available_memory: string;
+  cpu_usage: number;
+  memory_usage: number;
+  available_memory: number;
+  network_receive_bytes: number;
+  network_transmit_bytes: number;
+  load_average: number;
 }
 
 const formatBytes = (bytes: number, decimals = 2) => {
   if (bytes === 0) return '0 Bytes';
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
 
-const formatPercentage = (value: string) => {
-  const num = parseFloat(value);
-  if (isNaN(num)) return 'N/A';
-  // If the number is already a percentage (greater than or equal to 1), don't multiply
-  return (num >= 1 ? num : num * 100).toFixed(2) + '%';
-};
-
 const THRESHOLDS = {
-  CPU_usage: 80, // 80%
-  memory: 90, // 90%
-  diskSpace: 90, // 90%
-  swap: 50, // 50%
+  cpu_usage: 80, // 80%
+  memory_usage: 0.9, // 90% of total memory
+  load_average: 5, // Load average threshold
 };
 
 const isOutlier = (metricName: string, value: number): boolean => {
-  return value > THRESHOLDS[metricName as keyof typeof THRESHOLDS];
+  const threshold = THRESHOLDS[metricName as keyof typeof THRESHOLDS];
+  if (threshold !== undefined) {
+    return value > threshold;
+  }
+  return false;
 };
 
 export function MetricsDisplay() {
   const [metrics, setMetrics] = useState<Metric[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [fetchInterval, setFetchInterval] = useState<number>(60);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    useEffect(() => {
+  useEffect(() => {
     const fetchMetrics = async () => {
       try {
         const response = await fetch('/api/db-metrics?limit=50'); // Fetch last 50 metrics
@@ -53,7 +65,7 @@ export function MetricsDisplay() {
           throw new Error('Failed to fetch metrics');
         }
         const responseData = await response.json();
-        console.log('API Response:', responseData); // Log the entire response
+        console.log('API Response:', responseData);
 
         let metricsData: Metric[];
         if (Array.isArray(responseData.data)) {
@@ -74,24 +86,107 @@ export function MetricsDisplay() {
     };
 
     fetchMetrics();
-    const intervalId = setInterval(fetchMetrics, 60000); // Refresh every minute
+    const intervalId = setInterval(fetchMetrics, fetchInterval * 1000); // Refresh every minute
     return () => clearInterval(intervalId);
+  }, [fetchInterval]);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch('/api/settings');
+        if (!response.ok) {
+          throw new Error('Failed to fetch settings');
+        }
+        const responseData = await response.json();
+        setFetchInterval(responseData.data.fetch_interval);
+      } catch (err) {
+        console.error('Error fetching settings:', err);
+      }
+    };
+
+    fetchSettings();
   }, []);
 
-  const renderMetricCard = (title: string, value: string | number, metricName: string) => {
-    const numericValue = typeof value === 'string' ? parseFloat(value) : value;
-    const formattedValue = metricName.includes('memory') || metricName === 'swap' || metricName === 'diskSpace'
-      ? formatBytes(parseInt(value as string))
-      : formatPercentage(value as string);
-    
-    const isOutlying = isOutlier(metricName, numericValue);
+  const handleIntervalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFetchInterval(Number(event.target.value));
+  };
+
+  const handleUpdateSettings = async () => {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fetch_interval: fetchInterval, run_immediately: false }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update settings');
+      }
+    } catch (err) {
+      console.error('Error updating settings:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleRunImmediately = async () => {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fetch_interval: fetchInterval, run_immediately: true }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to trigger immediate execution');
+      }
+    } catch (err) {
+      console.error('Error triggering immediate execution:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const metricDescriptions = {
+    cpu_usage: 'Percentage of CPU used across all cores.',
+    memory_usage: 'Amount of memory currently in use.',
+    available_memory: 'Amount of free memory available.',
+    network_receive_bytes: 'Data received over the network per second.',
+    network_transmit_bytes: 'Data transmitted over the network per second.',
+    load_average: 'Average system load over the last minute.',
+  };
+
+  const renderMetricCard = (title: string, value: number, metricName: string) => {
+    let formattedValue: string;
+    switch (metricName) {
+      case 'cpu_usage':
+        formattedValue = value.toFixed(2) + '%';
+        break;
+      case 'memory_usage':
+      case 'available_memory':
+        formattedValue = formatBytes(value);
+        break;
+      case 'network_receive_bytes':
+      case 'network_transmit_bytes':
+        formattedValue = formatBytes(value) + '/s';
+        break;
+      case 'load_average':
+        formattedValue = value.toFixed(2);
+        break;
+      default:
+        formattedValue = value.toString();
+    }
+
+    const isOutlying = isOutlier(metricName, value);
 
     return (
-      <div className={`${styles.card} ${isOutlying ? styles.alert : ''}`}>
-        <h3>{title}</h3>
-        <p>{formattedValue}</p>
-        {isOutlying && <span className={styles.alertText}>Alert: High usage</span>}
-      </div>
+      <Tooltip title={metricDescriptions[metricName as keyof typeof metricDescriptions] || ''} arrow>
+        <div key={metricName} className={`${styles.card} ${isOutlying ? styles.alert : ''}`}>
+          <h3>{title}</h3>
+          <p>{formattedValue}</p>
+          {isOutlying && <span className={styles.alertText}>Alert: High usage</span>}
+        </div>
+      </Tooltip>
     );
   };
 
@@ -99,21 +194,81 @@ export function MetricsDisplay() {
   if (error) return <div className={styles.error}>Error: {error}</div>;
   if (metrics.length === 0) return <div className={styles.noData}>No metrics available</div>;
 
-    return (
+  const latestMetric = metrics[0];
+
+  return (
     <div className={styles.container}>
       <h2 className={styles.title}>System Metrics Overview</h2>
+
+      <div className={styles.controls}>
+        <TextField
+          label="Fetch Interval (seconds)"
+          type="number"
+          value={fetchInterval}
+          onChange={handleIntervalChange}
+          disabled={isSubmitting}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleUpdateSettings}
+          disabled={isSubmitting}
+        >
+          Update Interval
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleRunImmediately}
+          disabled={isSubmitting}
+        >
+          Run Immediately
+        </Button>
+      </div>
+
       <div>
         <div className={styles.timestamp}>
-          Last updated: {new Date(metrics[0].metric_date).toLocaleString()}
+          Last updated: {new Date(latestMetric.metric_date).toLocaleString()}
         </div>
- 
+
         <div className={styles.grid}>
-          {renderMetricCard('CPU Usage', metrics[0].CPU_usage, 'CPU_usage')}
-          {renderMetricCard('Memory Usage', metrics[0].memory, 'memory')}
-          {renderMetricCard('Available Memory', metrics[0].available_memory, 'available_memory')}
-          {renderMetricCard('Disk Space Used', metrics[0].diskSpace || '0', 'diskSpace')}
-          {renderMetricCard('Swap Usage', metrics[0].swap, 'swap')}
+          {renderMetricCard('CPU Usage', latestMetric.cpu_usage, 'cpu_usage')}
+          {renderMetricCard('Memory Usage', latestMetric.memory_usage, 'memory_usage')}
+          {renderMetricCard('Available Memory', latestMetric.available_memory, 'available_memory')}
+          {renderMetricCard('Network Receive', latestMetric.network_receive_bytes, 'network_receive_bytes')}
+          {renderMetricCard('Network Transmit', latestMetric.network_transmit_bytes, 'network_transmit_bytes')}
+          {renderMetricCard('Load Average', latestMetric.load_average, 'load_average')}
         </div>
+      </div>
+
+      <h3 className={styles.subtitle}>Metrics Over Time</h3>
+      <div className={styles.chartContainer}>
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart data={metrics.slice().reverse()}>
+            <CartesianGrid stroke="#ccc" />
+            <XAxis
+              dataKey="metric_date"
+              tickFormatter={(tick) => new Date(tick).toLocaleTimeString()}
+            />
+            <YAxis />
+            <RechartsTooltip labelFormatter={(label) => new Date(label).toLocaleString()} />
+            <Legend />
+            <Line type="monotone" dataKey="cpu_usage" name="CPU Usage (%)" stroke="#8884d8" />
+            <Line
+              type="monotone"
+              dataKey="memory_usage"
+              name="Memory Usage (Bytes)"
+              stroke="#82ca9d"
+            />
+            <Line
+              type="monotone"
+              dataKey="load_average"
+              name="Load Average"
+              stroke="#ff7300"
+            />
+            {/* Add more lines as needed */}
+          </LineChart>
+        </ResponsiveContainer>
       </div>
 
       <h3 className={styles.subtitle}>Metrics History</h3>
@@ -125,19 +280,21 @@ export function MetricsDisplay() {
               <th>CPU Usage</th>
               <th>Memory Usage</th>
               <th>Available Memory</th>
-              <th>Disk Space Used</th>
-              <th>Swap Usage</th>
+              <th>Network Receive</th>
+              <th>Network Transmit</th>
+              <th>Load Average</th>
             </tr>
           </thead>
           <tbody>
             {metrics.map((metric) => (
               <tr key={metric.id}>
                 <td>{new Date(metric.metric_date).toLocaleString()}</td>
-                <td>{formatPercentage(metric.CPU_usage)}</td>
-                <td>{formatBytes(parseInt(metric.memory))}</td>
-                <td>{formatBytes(parseInt(metric.available_memory))}</td>
-                <td>{formatBytes(parseInt(metric.diskSpace || '0'))}</td>
-                <td>{formatBytes(parseInt(metric.swap))}</td>
+                <td>{metric.cpu_usage.toFixed(2)}%</td>
+                <td>{formatBytes(metric.memory_usage)}</td>
+                <td>{formatBytes(metric.available_memory)}</td>
+                <td>{formatBytes(metric.network_receive_bytes)}/s</td>
+                <td>{formatBytes(metric.network_transmit_bytes)}/s</td>
+                <td>{metric.load_average.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>

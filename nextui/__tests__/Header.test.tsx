@@ -110,7 +110,6 @@ describe('Header component', () => {
     });
   });
 
-  
   it('should navigate to correct paths when links are clicked and not show 404', async () => {
     mockRouter.setCurrentUrl('/systemData');
 

@@ -14,13 +14,14 @@ CREATE TABLE services(
 );
 
 CREATE TABLE snapshots(
-  id serial PRIMARY KEY NOT NULL,
-  metric_date varchar NOT NULL,
-  diskSpace varchar NOT NULL,
-  memory varchar NOT NULL,
-  swap varchar NOT NULL,
-  CPU_usage varchar NOT NULL,
-  available_memory varchar NOT NULL
+  id SERIAL PRIMARY KEY,
+    metric_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    cpu_usage DOUBLE PRECISION,
+    memory_usage DOUBLE PRECISION,
+    available_memory DOUBLE PRECISION,
+    network_receive_bytes DOUBLE PRECISION,
+    network_transmit_bytes DOUBLE PRECISION,
+    load_average DOUBLE PRECISION
 );
 
 CREATE TABLE usersettings(
@@ -28,6 +29,12 @@ CREATE TABLE usersettings(
     lastname varchar NOT NULL,
     email varchar PRIMARY KEY NOT NULL
 );
+CREATE TABLE IF NOT EXISTS settings (
+    id SERIAL PRIMARY KEY,
+    fetch_interval INTEGER DEFAULT 60,
+    run_immediately BOOLEAN DEFAULT FALSE
+);
+
 
 CREATE TABLE conversation_history (
   id serial PRIMARY KEY NOT NULL,
@@ -40,3 +47,7 @@ ALTER TABLE services OWNER TO admin;
 ALTER TABLE snapshots OWNER TO admin;
 ALTER TABLE usersettings OWNER to admin;
 ALTER TABLE conversation_history OWNER TO admin;
+
+INSERT INTO settings (id, fetch_interval, run_immediately)
+VALUES (1, 60, FALSE)
+ON CONFLICT (id) DO NOTHING;

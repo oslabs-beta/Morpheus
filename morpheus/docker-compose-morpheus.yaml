@@ -120,6 +120,11 @@ services:
       - POSTGRES_PASSWORD=admin
       - POSTGRES_USER=admin
       - POSTGRES_DB=morpheus
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d morpheus"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     depends_on:
       - morpheus
 
@@ -128,8 +133,8 @@ services:
       context: ./scripts
       dockerfile: dockerfile-p2p.yaml
     depends_on:
-      - prometheus
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       - PROMETHEUS_URL=http://prometheus:9090
       - POSTGRES_HOST=postgres
