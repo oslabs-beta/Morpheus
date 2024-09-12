@@ -7,8 +7,8 @@
 
 ## AWS Setup
 
-1. Set up access to AWS Bedrock LLM modes
-   1a. Login into your AWS account
+1. Set up access to AWS Bedrock LLM models
+   1a. Log into your AWS account
    1b. Navigate to Amazon Bedrock and click `Get started`
    1c. Look for `Bedrock configurations` and click on `model access` on the bottom left of the sidebar
    1d. Make note of which region you are in on the top right corner
@@ -45,6 +45,15 @@
    4a. Navigate to `nextui` -> `api` -> `aws-bedrock` -> `route.ts`
    4b. Within the `export async function GET(req: Request)` function, comment out the AWS Bedrock API call block
    4c. Uncomment the dummy data block and save the file
+
+## OpenAI Setup
+
+1. Log In: Visit the OpenAI platform and either create a new account or log in if you already have one: https://openai.com/index/openai-api/
+2. API Key Page: Navigate to the API Keys section found in the Dashboard: https://platform.openai.com/api-keys
+3. Generate API Key: Click on "Create new secret key" to generate a new API key.
+4. Copy and Insert Your Key: Once the API key is generated, make sure to copy it securely. Finally, add the key to the `.env.local` file you created in Step 3 of AWS Setup.
+
+- For more information, go to: https://platform.openai.com/docs/overview
 
 # Setting Up Development Environment
 
