@@ -21,7 +21,8 @@ CREATE TABLE snapshots(
     available_memory DOUBLE PRECISION,
     network_receive_bytes DOUBLE PRECISION,
     network_transmit_bytes DOUBLE PRECISION,
-    load_average DOUBLE PRECISION
+    load_average DOUBLE PRECISION,
+    total_memory DOUBLE PRECISION
 );
 
 CREATE TABLE usersettings(
@@ -29,6 +30,7 @@ CREATE TABLE usersettings(
     lastname varchar NOT NULL,
     email varchar PRIMARY KEY NOT NULL
 );
+
 CREATE TABLE IF NOT EXISTS settings (
     id SERIAL PRIMARY KEY,
     fetch_interval INTEGER DEFAULT 60,

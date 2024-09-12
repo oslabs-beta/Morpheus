@@ -22,6 +22,7 @@ interface Metric {
   cpu_usage: number;
   memory_usage: number;
   available_memory: number;
+  total_memory: number;
   network_receive_bytes: number;
   network_transmit_bytes: number;
   load_average: number;
@@ -45,6 +46,10 @@ const THRESHOLDS = {
 const isOutlier = (metricName: string, value: number): boolean => {
   const threshold = THRESHOLDS[metricName as keyof typeof THRESHOLDS];
   if (threshold !== undefined) {
+    if (metricName === 'memory_usage') {
+      // For memory_usage, value is already in percentage
+      return value > threshold;
+    }
     return value > threshold;
   }
   return false;
@@ -156,45 +161,72 @@ export function MetricsDisplay() {
     load_average: 'Average system load over the last minute.',
   };
 
-  const renderMetricCard = (title: string, value: number, metricName: string) => {
+  const renderMetricCard = (
+    title: string,
+    metric: Metric,
+    metricName: keyof Metric
+  ) => {
+    const value = metric[metricName];
     let formattedValue: string;
+
     switch (metricName) {
       case 'cpu_usage':
-        formattedValue = value.toFixed(2) + '%';
+        formattedValue = typeof value === 'number' ? value.toFixed(2) + '%' : value.toString();
         break;
       case 'memory_usage':
+        const totalMemory = metric.total_memory;
+        if (totalMemory && typeof value === 'number') {
+          const percentage = (value / totalMemory) * 100;
+          formattedValue = percentage.toFixed(2) + '%';
+        } else if (typeof value === 'number') {
+          formattedValue = formatBytes(value);
+        } else {
+          formattedValue = 'N/A';
+        }
+        break;
       case 'available_memory':
-        formattedValue = formatBytes(value);
+        formattedValue = typeof value === 'number' ? formatBytes(value) : 'N/A';
         break;
       case 'network_receive_bytes':
       case 'network_transmit_bytes':
-        formattedValue = formatBytes(value) + '/s';
+        formattedValue = typeof value === 'number' ? formatBytes(value) + '/s' : 'N/A';
         break;
       case 'load_average':
-        formattedValue = value.toFixed(2);
+        formattedValue = typeof value === 'number' ? value.toFixed(2) : value.toString();
         break;
       default:
         formattedValue = value.toString();
     }
 
-    const isOutlying = isOutlier(metricName, value);
+    const isOutlying = isOutlier(metricName, typeof value === 'number' ? value : parseFloat(value.toString()));
 
     return (
-      <Tooltip title={metricDescriptions[metricName as keyof typeof metricDescriptions] || ''} arrow>
-        <div key={metricName} className={`${styles.card} ${isOutlying ? styles.alert : ''}`}>
-          <h3>{title}</h3>
-          <p>{formattedValue}</p>
-          {isOutlying && <span className={styles.alertText}>Alert: High usage</span>}
-        </div>
-      </Tooltip>
-    );
-  };
+    <Tooltip
+      title={metricDescriptions[metricName as keyof typeof metricDescriptions] || ''}
+      arrow
+    >
+      <div
+        key={metricName}
+        className={`${styles.card} ${isOutlying ? styles.alert : ''}`}
+      >
+        <h3>{title}</h3>
+        <p>{formattedValue}</p>
+        {isOutlying && <span className={styles.alertText}>Alert: High usage</span>}
+      </div>
+    </Tooltip>
+  );
+};
 
   if (loading) return <div className={styles.loading}>Loading...</div>;
   if (error) return <div className={styles.error}>Error: {error}</div>;
   if (metrics.length === 0) return <div className={styles.noData}>No metrics available</div>;
 
   const latestMetric = metrics[0];
+
+  const chartData = metrics.slice().reverse().map((metric) => ({
+    ...metric,
+    memory_usage_percentage: (metric.memory_usage / metric.total_memory) * 100,
+  }));
 
   return (
     <div className={styles.container}>
@@ -230,21 +262,20 @@ export function MetricsDisplay() {
         <div className={styles.timestamp}>
           Last updated: {new Date(latestMetric.metric_date).toLocaleString()}
         </div>
-
         <div className={styles.grid}>
-          {renderMetricCard('CPU Usage', latestMetric.cpu_usage, 'cpu_usage')}
-          {renderMetricCard('Memory Usage', latestMetric.memory_usage, 'memory_usage')}
-          {renderMetricCard('Available Memory', latestMetric.available_memory, 'available_memory')}
-          {renderMetricCard('Network Receive', latestMetric.network_receive_bytes, 'network_receive_bytes')}
-          {renderMetricCard('Network Transmit', latestMetric.network_transmit_bytes, 'network_transmit_bytes')}
-          {renderMetricCard('Load Average', latestMetric.load_average, 'load_average')}
+          {renderMetricCard('CPU Usage', latestMetric, 'cpu_usage')}
+{renderMetricCard('Memory Usage', latestMetric, 'memory_usage')}
+          {renderMetricCard('Available Memory', latestMetric, 'available_memory')}
+          {renderMetricCard('Network Receive', latestMetric, 'network_receive_bytes')}
+          {renderMetricCard('Network Transmit', latestMetric, 'network_transmit_bytes')}
+          {renderMetricCard('Load Average', latestMetric, 'load_average')}
         </div>
       </div>
 
       <h3 className={styles.subtitle}>Metrics Over Time</h3>
       <div className={styles.chartContainer}>
         <ResponsiveContainer width="100%" height={400}>
-          <LineChart data={metrics.slice().reverse()}>
+          <LineChart data={chartData}>
             <CartesianGrid stroke="#ccc" />
             <XAxis
               dataKey="metric_date"
@@ -256,8 +287,8 @@ export function MetricsDisplay() {
             <Line type="monotone" dataKey="cpu_usage" name="CPU Usage (%)" stroke="#8884d8" />
             <Line
               type="monotone"
-              dataKey="memory_usage"
-              name="Memory Usage (Bytes)"
+              dataKey="memory_usage_percentage"
+              name="Memory Usage (%)"
               stroke="#82ca9d"
             />
             <Line
@@ -266,7 +297,6 @@ export function MetricsDisplay() {
               name="Load Average"
               stroke="#ff7300"
             />
-            {/* Add more lines as needed */}
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -285,19 +315,21 @@ export function MetricsDisplay() {
               <th>Load Average</th>
             </tr>
           </thead>
-          <tbody>
-            {metrics.map((metric) => (
-              <tr key={metric.id}>
-                <td>{new Date(metric.metric_date).toLocaleString()}</td>
-                <td>{metric.cpu_usage.toFixed(2)}%</td>
-                <td>{formatBytes(metric.memory_usage)}</td>
-                <td>{formatBytes(metric.available_memory)}</td>
-                <td>{formatBytes(metric.network_receive_bytes)}/s</td>
-                <td>{formatBytes(metric.network_transmit_bytes)}/s</td>
-                <td>{metric.load_average.toFixed(2)}</td>
-              </tr>
-            ))}
-          </tbody>
+         <tbody>
+  {metrics.map((metric) => (
+    <tr key={metric.id}>
+      <td>{new Date(metric.metric_date).toLocaleString()}</td>
+      <td>{metric.cpu_usage.toFixed(2)}%</td>
+      <td>
+        {((metric.memory_usage / metric.total_memory) * 100).toFixed(2)}%
+      </td>
+      <td>{formatBytes(metric.available_memory)}</td>
+      <td>{formatBytes(metric.network_receive_bytes)}/s</td>
+      <td>{formatBytes(metric.network_transmit_bytes)}/s</td>
+      <td>{metric.load_average.toFixed(2)}</td>
+    </tr>
+  ))}
+</tbody>
         </table>
       </div>
     </div>
