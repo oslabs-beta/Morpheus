@@ -1,0 +1,158 @@
+# version: '3.9'
+
+services:
+  # The UI/Backend
+  morpheus:
+    build:
+      context: ..
+      dockerfile: morpheus/dockerfile.dev
+    container_name: morpheus
+    restart: unless-stopped
+    environment:
+      - MODE=browser
+      - STATUS=development
+    volumes:
+      # Opens the docker sock and creates named volumes for persistent data that can be shared between containers
+      - /var/run/docker.sock:/var/run/docker.sock
+      - morpheus-prometheus-files:/prometheus
+      - morpheus-grafana-files:/grafana
+      - morpheus-initsql:/postgres
+    # ports:
+    #   - 3001:3001
+
+  cadvisor:
+    # Must use cadvisor v0.47.1 instead of latest, latest does not work for macOS
+    # The morpheus image uploaded is on gcr.io/cadvisor/cadvisor:v0.47.1
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    container_name: morpheus-cadvisor
+    restart: unless-stopped
+    expose:
+      - 8080
+    ports:
+      - 50000:8080
+    volumes:
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/machine-id:/etc/machine-id:ro
+      - /var/lib/dbus/machine-id:/var/lib/dbus/machine-id:ro
+      - /:/rootfs:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+    devices:
+      - /dev/kmsg
+
+  # Collects additional metrics that are then sent to prometheus
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: morpheus-node-exporter
+    restart: unless-stopped
+    expose:
+      - 9100
+    ports:
+      - 50001:9100
+    volumes:
+      #system info for linux machines
+      - /proc:/host/proc:ro
+      # also for linux
+      - /sys:/host/sys:ro
+      #root
+      - /:/rootfs:ro
+    command:
+      - --path.procfs=/host/proc
+      - --path.rootfs=/rootfs
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+      - --log.level=error
+
+  # Collects metrics and makes them available at localhost:9090
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: morpheus-prometheus
+    restart: unless-stopped
+    expose:
+      - 9090
+    ports:
+      - 50002:9090
+    volumes:
+      - morpheus-prometheus-files:/etc/prometheus
+      - morpheus-prometheus-data:/prometheus
+    # Tells prometheus to use the config file from ./imageConfigs/prometheus
+    # Dockerfile handles this if you're using the uploaded images
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --log.level=error
+    depends_on:
+      - node-exporter
+      - cadvisor
+      - morpheus
+
+  # Displays metrics gathered from containers
+  grafana:
+    image: grafana/grafana:latest
+    container_name: morpheus-grafana
+    restart: unless-stopped
+    expose:
+      - 3000
+    ports:
+      - 50003:3000
+    volumes:
+      - morpheus-grafana-files:/etc/grafana
+    environment:
+      GF_PATHS_CONFIG: /etc/grafana/grafana.ini
+    depends_on:
+      - prometheus
+
+  # Store metrics gathered from containers at localhost:5432
+  postgres:
+    image: postgres:16.4-alpine3.20
+    container_name: morpheus-postgres
+    restart: unless-stopped
+    expose:
+      - 5432
+    ports:
+      - 50005:5432
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+      - morpheus-initsql:/docker-entrypoint-initdb.d/
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=morpheus
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d morpheus"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      - morpheus
+
+  prometheus-to-postgres:
+    build:
+      context: ./scripts
+      dockerfile: dockerfile-p2p.yaml
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - PROMETHEUS_URL=http://prometheus:9090
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=morpheus
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - LOG_LEVEL=INFO
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        tag: "{{.Name}}"
+
+volumes:
+  morpheus-prometheus-data:
+  morpheus-prometheus-files:
+  morpheus-grafana-files:
+  morpheus-initsql:
+  postgres_volume:

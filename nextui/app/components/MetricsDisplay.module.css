@@ -1,0 +1,72 @@
+/* MetricsDisplay.module.css */
+
+.container {
+  padding: 20px;
+}
+
+.title {
+  text-align: center;
+}
+
+.timestamp {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 10px;
+  width: 200px;
+  text-align: center;
+}
+
+.alert {
+  border: 2px solid red;
+}
+
+.alertText {
+  color: red;
+  font-weight: bold;
+}
+
+.chartContainer {
+  margin: 40px 0;
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.metricsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.metricsTable th,
+.metricsTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.metricsTable th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.controls>* {
+  margin: 0 10px;
+}
