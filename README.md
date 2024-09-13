@@ -82,6 +82,12 @@ Leverage AI-powered analysis of your Docker metrics using AWS Bedrock and Claude
 
 Visualize your Kubernetes cluster with an interactive graph representation.
 
+## Database with PostgreSQL visualization of data
+
+![Morpheus Demo](docs/morpheus_demo7.gif)
+
+Get alerts on high CPU usage and monitor metrics directly from the database.
+
 ## System Monitoring
 
 ![Morpheus Demo](docs/morpheus_demo5.gif)
