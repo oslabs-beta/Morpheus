@@ -84,7 +84,7 @@ Visualize your Kubernetes cluster with an interactive graph representation.
 
 ## Database with PostgreSQL visualization of data
 
-![Morpheus Demo](docs/morpheus_demo7.gif)
+![Morpheus Demo](docs/morpheus_demo8.gif)
 
 Get alerts on high CPU usage and monitor metrics directly from the database.
 
