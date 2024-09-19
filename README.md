@@ -108,7 +108,7 @@ Contributions play a vital role in the open-source community. Any contributions 
 ## Our Team
 
 - Brian Nguyen [GitHub](https://github.com/BrianNguyen2323) | [LinkedIn](https://www.linkedin.com/in/ngynbrian/)
-- Darius Teng [GitHub](https://github.com/dariusteng) | [LinkedIn]()
+- Darius Teng [GitHub](https://github.com/dariusteng) | [LinkedIn](https://www.linkedin.com/in/dariusteng/)
 - Jasen Tenney [GitHub](https://github.com/jntenney) | [LinkedIn](https://www.linkedin.com/in/jasentenney/)
 - Kai Jiang [GitHub](https://github.com/kaij6) | [LinkedIn](https://www.linkedin.com/in/kai-jiang-9545a3295/)
 - Santiago Cravino [GitHub](https://github.com/cravinos) | [LinkedIn](https://www.linkedin.com/in/santiago-cravino/)
